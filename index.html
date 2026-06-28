@@ -192,7 +192,7 @@
   <h1>🏝️ 奄美イベントカレンダー 🏝️</h1>
 
   <div class="calendar-container" id="calendarContainer">
-    <div style="text-align: center; color: #777;">イベント情報を読み込んでいます...</div>
+    <div style="text-align: center; color: #777;">イベント情報を読み込んでいます。今しばらくお待ちください。</div>
   </div>
 
   <script>
@@ -226,7 +226,6 @@
         card.className = 'event-card';
         card.innerHTML = `
           <div class="card-body">
-           // HTMLコード内の renderEvents の一部（カード本文）を以下のように更新すると「備考」が表示されます！
 <div class="card-body">
   <div class="event-title">${event.title}</div>
   <div class="info-line"><span class="info-label">開催日：</span><span class="info-value">${event.date}</span></div>
