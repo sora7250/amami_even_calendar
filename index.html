@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>奄美イベントカレンダー</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* 全体デザイン：明るい淡いブルー系統 */
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background-color: #f0f7fa;
+      color: #333333;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      color: #2b7a9e;
+      margin-bottom: 30px;
+      font-size: 1.8rem;
+    }
+
+    .calendar-container {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* 独立したカードタイプ */
+    .event-card {
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e1f0f7;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 本文コンテンツ（行分け表示） */
+    .card-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 0.95rem;
+    }
+
+    .info-line {
+      display: flex;
+      line-height: 1.5;
+    }
+
+    .info-label {
+      font-weight: 700;
+      color: #5a9cb3;
+      width: 110px;
+      flex-shrink: 0;
+    }
+
+    .info-value {
+      color: #444444;
+    }
+
+    .event-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #1d5670;
+      margin-bottom: 6px;
+    }
+
+    .event-link a {
+      color: #2b7a9e;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .event-link a:hover {
+      text-decoration: underline;
+    }
+
+    /* フッター：本文との間に区切り線 */
+    .card-footer {
+      border-top: 1px solid #e8f4f9;
+      padding: 10px 20px;
+      background-color: #fafdfebd;
+      display: flex;
+      gap: 20px;
+    }
+
+    /* ボタン共通のグレースケール基本スタイル */
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      color: #777777; /* グレースケール */
+      transition: background-color 0.2s;
+    }
+
+    .action-btn:hover {
+      background-color: #f0f7fa;
+    }
+
+    .action-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: #999999; /* グレースケール型取り */
+    }
+
+    /* いいねボタン：押された時の赤色＆凹むアニメーション */
+    .like-btn.liked {
+      color: #e63946;
+      animation: click-dent 0.15s ease-in-out;
+    }
+    
+    .like-btn.liked svg {
+      fill: #e63946;
+    }
+
+    @keyframes click-dent {
+      0% { transform: scale(1); }
+      50% { transform: scale(0.85); } /* 凹む表現 */
+      100% { transform: scale(1); }
+    }
+
+    /* コメントエリア */
+    .comment-section {
+      border-top: 1px solid #f0f7fa;
+      background-color: #fcfdfe;
+      padding: 15px 20px;
+      display: none; /* 初期状態は非表示 */
+    }
+
+    .comment-input-wrap {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .comment-input {
+      flex-grow: 1;
+      padding: 8px 12px;
+      border: 1px solid #cce3ee;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      outline: none;
+    }
+    .comment-input:focus {
+      border-color: #72b2cc;
+    }
+
+    .comment-submit-btn {
+      background-color: #5a9cb3;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .comment-submit-btn:hover {
+      background-color: #2b7a9e;
+    }
+
+    .comments-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .comment-item {
+      padding: 8px 12px;
+      background-color: #f3f9fc;
+      border-radius: 6px;
+      font-size: 0.88rem;
+    }
+
+    .comment-time {
+      font-size: 0.75rem;
+      color: #999999;
+      margin-top: 4px;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🏝️ 奄美イベントカレンダー 🏝️</h1>
+
+  <div class="calendar-container" id="calendarContainer">
+    <div style="text-align: center; color: #777;">イベント情報を読み込んでいます...</div>
+  </div>
+
+  <script>
+    // GASのWebアプリURL（デプロイ後に自動で自身をターゲットにするための空指定、またはURLを直接入力）
+    const GAS_URL = "<?= ScriptApp.getService().getUrl() ?>";
+
+    // アプリ起動時にイベント一覧を取得
+    document.addEventListener('DOMContentLoaded', loadEvents);
+
+    function loadEvents() {
+      fetch(GAS_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'getEvents' })
+      })
+      .then(res => res.json())
+      .then(events => {
+        renderEvents(events);
+      })
+      .catch(err => console.error("データ取得エラー:", err));
+    }
+
+    function renderEvents(events) {
+      const container = document.getElementById('calendarContainer');
+      container.innerHTML = '';
+
+      if(events.length === 0) {
+        container.innerHTML = '<div style="text-align:center;color:#777;">現在予定されているイベントはありません。</div>';
+        return;
+      }
+
+      events.forEach(event => {
+        const card = document.createElement('div');
+        card.className = 'event-card';
+        card.innerHTML = `
+          <div class="card-body">
+           // HTMLコード内の renderEvents の一部（カード本文）を以下のように更新すると「備考」が表示されます！
+<div class="card-body">
+  <div class="event-title">${event.title}</div>
+  <div class="info-line"><span class="info-label">開催日：</span><span class="info-value">${event.date}</span></div>
+  <div class="info-line"><span class="info-label">開始時刻：</span><span class="info-value">${event.time}</span></div>
+  <div class="info-line"><span class="info-label">開催場所：</span><span class="info-value">${event.location}</span></div>
+  <div class="info-line"><span class="info-label">住所：</span><span class="info-value">${event.address}</span></div>
+  <div class="info-line"><span class="info-label">運営主体：</span><span class="info-value">${event.organizer}</span></div>
+  <div class="info-line event-link"><span class="info-label">詳細リンク：</span><span class="info-value"><a href="${event.link}" target="_blank">詳細を見る</a></span></div>
+  ${event.remark ? `<div class="info-line" style="margin-top: 4px; font-size: 0.88rem; color: #666;"><span class="info-label">備考：</span><span class="info-value">${event.remark}</span></div>` : ''}
+</div>
+
+          <div class="card-footer">
+            <button class="action-btn comment-btn" onclick="toggleCommentSection('${event.eventId}')">
+              <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
+              <span id="comment-count-${event.eventId}">${event.comments.length}</span>
+            </button>
+            <button class="action-btn like-btn" id="like-btn-${event.eventId}" onclick="handleLike('${event.eventId}')">
+              <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              <span id="like-count-${event.eventId}">${event.likes}</span>
+            </button>
+          </div>
+          <div class="comment-section" id="comment-section-${event.eventId}">
+            <div class="comment-input-wrap">
+              <input type="text" class="comment-input" id="input-${event.eventId}" placeholder="コメントを入力...">
+              <button class="comment-submit-btn" onclick="submitComment('${event.eventId}')">送信</button>
+            </div>
+            <div class="comments-list" id="comments-list-${event.eventId}">
+              ${event.comments.map(c => `
+                <div class="comment-item">
+                  <div>${c.content}</div>
+                  <div class="comment-time">${c.timestamp}</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // いいねボタンのリアルタイム処理＆凹むアニメーション
+    function handleLike(eventId) {
+      const btn = document.getElementById(`like-btn-${eventId}`);
+      const countSpan = document.getElementById(`like-count-${eventId}`);
+      
+      // 連打防止・アニメーションの一時リセット
+      btn.classList.remove('liked');
+      void btn.offsetWidth; // 謎のリフレッシュトリックでアニメーションを再トリガー可能にする
+      btn.classList.add('liked');
+
+      fetch(GAS_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'addLike', eventId: eventId })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          countSpan.innerText = data.newLikes;
+        }
+      });
+    }
+
+    // コメントセクションの開閉
+    function toggleCommentSection(eventId) {
+      const section = document.getElementById(`comment-section-${eventId}`);
+      if (section.style.display === 'block') {
+        section.style.display = 'none';
+      } else {
+        section.style.display = 'block';
+      }
+    }
+
+    // コメントのリアルタイム送信（新しい順に上に追加）
+    function submitComment(eventId) {
+      const input = document.getElementById(`input-${eventId}`);
+      const commentText = input.value.trim();
+      if (!commentText) return;
+
+      fetch(GAS_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'addComment', eventId: eventId, comment: commentText })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          input.value = ''; // 入力欄クリア
+          
+          // リストの先頭（上）に新しいコメントをリアルタイム挿入
+          const list = document.getElementById(`comments-list-${eventId}`);
+          const newItem = document.createElement('div');
+          newItem.className = 'comment-item';
+          newItem.innerHTML = `
+            <div>${data.comment.content}</div>
+            <div class="comment-time">${data.comment.timestamp}</div>
+          `;
+          list.insertBefore(newItem, list.firstChild);
+
+          // コメント数のカウント更新
+          const countSpan = document.getElementById(`comment-count-${eventId}`);
+          countSpan.innerText = parseInt(countSpan.innerText) + 1;
+        }
+      });
+    }
+  </script>
+</body>
+</html>
