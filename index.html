@@ -5,7 +5,6 @@
   <title>奄美イベントカレンダー</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
-    /* 全体デザイン：明るい淡いブルー系統 */
     body {
       font-family: 'Noto Sans JP', sans-serif;
       background-color: #f0f7fa;
@@ -30,8 +29,6 @@
       flex-direction: column;
       gap: 20px;
     }
-
-    /* 独立したカードタイプ */
     .event-card {
       background-color: #ffffff;
       border-radius: 12px;
@@ -42,7 +39,6 @@
       flex-direction: column;
     }
 
-    /* 本文コンテンツ（行分け表示） */
     .card-body {
       padding: 20px;
       display: flex;
@@ -83,7 +79,6 @@
       text-decoration: underline;
     }
 
-    /* フッター：本文との間に区切り線 */
     .card-footer {
       border-top: 1px solid #e8f4f9;
       padding: 10px 20px;
@@ -92,7 +87,6 @@
       gap: 20px;
     }
 
-    /* ボタン共通のグレースケール基本スタイル */
     .action-btn {
       display: flex;
       align-items: center;
@@ -103,7 +97,7 @@
       padding: 6px 12px;
       border-radius: 20px;
       font-size: 0.9rem;
-      color: #777777; /* グレースケール */
+      color: #777777;
       transition: background-color 0.2s;
     }
 
@@ -114,10 +108,9 @@
     .action-btn svg {
       width: 20px;
       height: 20px;
-      fill: #999999; /* グレースケール型取り */
+      fill: #999999;
     }
 
-    /* いいねボタン：押された時の赤色＆凹むアニメーション */
     .like-btn.liked {
       color: #e63946;
       animation: click-dent 0.15s ease-in-out;
@@ -129,16 +122,15 @@
 
     @keyframes click-dent {
       0% { transform: scale(1); }
-      50% { transform: scale(0.85); } /* 凹む表現 */
+      50% { transform: scale(0.85); } 
       100% { transform: scale(1); }
     }
 
-    /* コメントエリア */
     .comment-section {
       border-top: 1px solid #f0f7fa;
       background-color: #fcfdfe;
       padding: 15px 20px;
-      display: none; /* 初期状態は非表示 */
+      display: none;
     }
 
     .comment-input-wrap {
@@ -204,10 +196,8 @@
   </div>
 
   <script>
-    // GASのWebアプリURL（デプロイ後に自動で自身をターゲットにするための空指定、またはURLを直接入力）
     const GAS_URL = "https://script.google.com/macros/s/AKfycbwbQYHy4tXJXPo7G1FimintcsiIzwLf1q2G0e0-jM3_NbMTaf96-sJ6I3KW0UD7OHSfUQ/exec";
 
-    // アプリ起動時にイベント一覧を取得
     document.addEventListener('DOMContentLoaded', loadEvents);
 
     function loadEvents() {
@@ -277,14 +267,12 @@
       });
     }
 
-    // いいねボタンのリアルタイム処理＆凹むアニメーション
     function handleLike(eventId) {
       const btn = document.getElementById(`like-btn-${eventId}`);
       const countSpan = document.getElementById(`like-count-${eventId}`);
       
-      // 連打防止・アニメーションの一時リセット
       btn.classList.remove('liked');
-      void btn.offsetWidth; // 謎のリフレッシュトリックでアニメーションを再トリガー可能にする
+      void btn.offsetWidth;
       btn.classList.add('liked');
 
       fetch(GAS_URL, {
@@ -299,7 +287,6 @@
       });
     }
 
-    // コメントセクションの開閉
     function toggleCommentSection(eventId) {
       const section = document.getElementById(`comment-section-${eventId}`);
       if (section.style.display === 'block') {
@@ -309,7 +296,6 @@
       }
     }
 
-    // コメントのリアルタイム送信（新しい順に上に追加）
     function submitComment(eventId) {
       const input = document.getElementById(`input-${eventId}`);
       const commentText = input.value.trim();
@@ -322,9 +308,8 @@
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          input.value = ''; // 入力欄クリア
+          input.value = '';
           
-          // リストの先頭（上）に新しいコメントをリアルタイム挿入
           const list = document.getElementById(`comments-list-${eventId}`);
           const newItem = document.createElement('div');
           newItem.className = 'comment-item';
@@ -334,7 +319,6 @@
           `;
           list.insertBefore(newItem, list.firstChild);
 
-          // コメント数のカウント更新
           const countSpan = document.getElementById(`comment-count-${eventId}`);
           countSpan.innerText = parseInt(countSpan.innerText) + 1;
         }
