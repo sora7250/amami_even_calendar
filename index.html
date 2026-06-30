@@ -2,464 +2,383 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>奄美イベントカレンダー | 管理画面</title>
+  <title>奄美イベントカレンダー</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
+    /* 全体デザイン：明るい淡いブルー系統 */
     body {
       font-family: 'Noto Sans JP', sans-serif;
-      background-color: #f4f7f6;
-      color: #333;
+      background-color: #f0f7fa;
+      color: #333333;
       margin: 0;
-      padding: 0;
-    }
-    
-    /* 上部ヘッダーバーのスタイリング */
-    .header-bar {
-      background-color: #2b7a9e;
-      color: white;
-      padding: 15px;
+      padding: 20px;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      position: relative;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
-    /* 三本線（ハンバーガー）ボタン */
-    .menu-trigger {
+    h1 {
+      color: #2b7a9e;
+      margin-bottom: 30px;
+      font-size: 1.8rem;
+      text-align: center;
+    }
+
+    .calendar-container {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* 独立したカードタイプ */
+    .event-card {
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e1f0f7;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 本文コンテンツ（行分け表示） */
+    .card-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 0.95rem;
+    }
+
+    .info-line {
+      display: flex;
+      line-height: 1.5;
+    }
+
+    .info-label {
+      font-weight: 700;
+      color: #5a9cb3;
+      width: 110px;
+      flex-shrink: 0;
+    }
+
+    .info-value {
+      color: #444444;
+    }
+
+    .event-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #1d5670;
+      margin-bottom: 6px;
+    }
+
+    .event-link a {
+      color: #2b7a9e;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .event-link a:hover {
+      text-decoration: underline;
+    }
+
+    /* フッター：本文との間に区切り線を表示 */
+    .card-footer {
+      border-top: 1px solid #e8f4f9;
+      padding: 10px 20px;
+      background-color: #fafdfebd;
+      display: flex;
+      gap: 20px;
+    }
+
+    /* ボタン共通：型取り・グレースケール基本スタイル */
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
       background: none;
       border: none;
       cursor: pointer;
-      padding: 5px;
-      display: none; /* 初期（認証前）は非表示 */
-      align-items: center;
-    }
-    .menu-trigger svg {
-      width: 28px;
-      height: 28px;
-      fill: white;
-    }
-
-    .header-title {
-      font-size: 1.1rem;
-      font-weight: bold;
-      margin-left: 15px;
-      flex-grow: 1;
-    }
-
-    /* スライド式サイドメニュー */
-    .side-menu {
-      position: fixed;
-      top: 0;
-      left: -260px; /* 初期状態は画面外に隠す */
-      width: 240px;
-      height: 100%;
-      background-color: #1d5670;
-      box-shadow: 2px 0 10px rgba(0,0,0,0.2);
-      z-index: 100;
-      transition: left 0.3s ease;
-      padding: 20px 10px;
-      box-sizing: border-box;
-    }
-    .side-menu.open {
-      left: 0; /* メニューを開く */
-    }
-    .side-menu h3 {
-      color: #b0cddb;
+      padding: 6px 12px;
+      border-radius: 20px;
       font-size: 0.9rem;
-      border-bottom: 1px solid #2b7a9e;
-      padding-bottom: 10px;
-      margin-top: 10px;
-    }
-    .menu-item {
-      display: block;
-      color: white;
-      text-decoration: none;
-      padding: 12px 15px;
-      border-radius: 6px;
-      margin-bottom: 5px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .menu-item:hover, .menu-item.active {
-      background-color: #2b7a9e;
+      color: #777777; /* グレースケールテキスト */
+      transition: background-color 0.2s;
     }
 
-    /* メニューを開いている時の背景の黒い影 */
-    .menu-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.4);
-      z-index: 90;
-      display: none;
+    .action-btn:hover {
+      background-color: #f0f7fa;
     }
 
-    .main-container {
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 15px;
-      box-sizing: border-box;
+    .action-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: #999999; /* グレースケール型取り */
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: fill 0.2s, stroke 0.2s;
     }
-    .card {
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      margin-bottom: 20px;
-      transition: all 0.3s ease;
+
+    /* コメントボタン（アクティブ時） */
+    .comment-btn.active svg {
+      stroke: #2b7a9e;
+      fill: #e1f0f7;
     }
-    .form-group { margin-bottom: 12px; }
-    label {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 5px;
-      font-size: 0.9rem;
-      color: #555;
-    }
-    input[type="text"], input[type="date"], input[type="time"], input[type="password"] {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      box-sizing: border-box;
-      font-size: 1rem;
-      outline: none;
-    }
-    button {
-      width: 100%;
-      padding: 12px;
-      background-color: #2b7a9e;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 1rem;
-      font-weight: bold;
-      cursor: pointer;
+
+    /* いいねボタン：押された時の赤色＆凹むアニメーション */
+    .like-btn.liked {
+      color: #e63946;
+      animation: click-dent 0.15s ease-in-out;
     }
     
-    /* メッセージ通知エリア */
-    .error-message { color: #e63946; background-color: #fff5f5; border: 1px solid #ffcccc; padding: 10px; border-radius: 6px; text-align: center; margin-bottom: 15px; display: none; }
-    .success-message { color: #2a9d8f; background-color: #f0fbf9; border: 1px solid #cceee9; padding: 10px; border-radius: 6px; text-align: center; margin-bottom: 15px; display: none; }
-
-    /* パスコード誤入力時の横揺れ */
-    .shake { animation: shake-animation 0.4s ease-in-out; border: 2px solid #e63946 !important; }
-    @keyframes shake-animation {
-      0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-8px); }
-      40%, 80% { transform: translateX(8px); }
+    .like-btn.liked svg {
+      fill: #e63946;
+      stroke: #e63946;
     }
 
-    .timer-bar {
-      background-color: #e2ebee;
-      color: #2b7a9e;
-      padding: 8px 15px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: bold;
+    @keyframes click-dent {
+      0% { transform: scale(1); }
+      50% { transform: scale(0.85); } /* 凹むアニメーション */
+      100% { transform: scale(1); }
+    }
+
+    /* コメントエリア */
+    .comment-section {
+      border-top: 1px solid #e8f4f9;
+      background-color: #fcfdfe;
+      padding: 15px 20px;
+      display: none; /* 初期状態は非表示 */
+    }
+
+    .comment-input-wrap {
       display: flex;
-      justify-content: space-between;
+      gap: 10px;
       margin-bottom: 15px;
     }
-    .danger-btn { background-color: #e63946; padding: 6px 12px; width: auto; font-size: 0.85rem; color: white; border: none; border-radius: 4px; cursor: pointer; }
-    .disabled-status { color: #999; font-style: italic; font-size: 0.85rem; }
-    
-    .event-list-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 0;
-      border-bottom: 1px solid #eee;
+
+    .comment-input {
+      flex-grow: 1;
+      padding: 10px 12px;
+      border: 1px solid #cce3ee;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      outline: none;
+      box-sizing: border-box;
     }
-    
-    /* 階層（レイヤー）切り替え用の非表示クラス */
-    .admin-layer { display: none; }
-    #authCard { display: block; }
-    #adminContent { display: none; }
+    .comment-input:focus {
+      border-color: #72b2cc;
+    }
+
+    .comment-submit-btn {
+      background-color: #5a9cb3;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .comment-submit-btn:hover {
+      background-color: #2b7a9e;
+    }
+
+    .comments-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 250px;
+      overflow-y: auto;
+    }
+
+    .comment-item {
+      padding: 10px 12px;
+      background-color: #f3f9fc;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      line-height: 1.4;
+    }
+
+    .comment-time {
+      font-size: 0.75rem;
+      color: #999999;
+      margin-top: 4px;
+      text-align: right;
+    }
   </style>
 </head>
 <body>
 
-  <div class="header-bar">
-    <button class="menu-trigger" id="menuTrigger" onclick="toggleMenu()">
-      <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
-    </button>
-    <div class="header-title" id="headerTitle">運営管理者ポータル</div>
+  <h1>🏝️ 奄美イベントカレンダー 🏝️</h1>
+
+  <div class="calendar-container" id="calendarContainer">
+    <div style="text-align: center; color: #777; padding: 20px;">最新のイベント情報を読み込んでいます...</div>
   </div>
 
-  <div class="side-menu" id="sideMenu">
-    <h3>MENU</h3>
-    <div class="menu-item active" id="menuItemAdd" onclick="switchLayer('add')">📅 新規イベントの登録</div>
-    <div class="menu-item" id="menuItemManage" onclick="switchLayer('manage')">🗑️ 掲載中イベントの管理</div>
-    <div class="menu-item" style="margin-top: 30px; background-color: #c92a3a; text-align: center;" onclick="triggerAutoLock()">🔒 画面をロックする</div>
-  </div>
-  <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+  <script>
+    // 【重要】一般ユーザー用（いいね・コメント受付用）のGASウェブアプリURLを貼り付けてください
+    const GAS_URL = "ここにあなたの一般ユーザー用GASウェブアプリURLを貼り付け";
 
-  <div class="main-container">
-    <div id="appError" class="error-message"></div>
-    <div id="appSuccess" class="success-message"></div>
+    // アプリ起動時にイベント一覧を自動ロード
+    document.addEventListener('DOMContentLoaded', loadEvents);
 
-    <div class="card" id="authCard">
-      <h2>🔑 セキュリティ認証</h2>
-      <p style="font-size:0.85rem; color:#666; text-align:center; margin-top:-10px;">安全のため、1353を入力してください</p>
-      <div class="form-group">
-        <input type="password" id="passInput" placeholder="4桁のパスコードを入力" maxlength="4" pattern="\d*">
-      </div>
-      <button onclick="verifyAdminCode()">ロック解除</button>
-    </div>
-
-    <div id="adminContent">
-      <div class="timer-bar">
-        <span>🔐 セキュリティ維持モード</span>
-        <span id="countdownDisplay">自動ロックまで: 15:00</span>
-      </div>
-      
-      <div id="layerAdd" class="admin-layer" style="display: block;">
-        <div class="card">
-          <h2>📅 新規イベントの追加サイト登録</h2>
-          <div class="form-group"><label>イベント名</label><input type="text" id="addTitle"></div>
-          <div class="form-group"><label>開催日</label><input type="date" id="addDate"></div>
-          <div class="form-group"><label>開始時刻</label><input type="text" id="addTime" placeholder="例: 13:00"></div>
-          <div class="form-group"><label>開催場所</label><input type="text" id="addLocation"></div>
-          <div class="form-group"><label>住所</label><input type="text" id="addAddress"></div>
-          <div class="form-group"><label>運営主体</label><input type="text" id="addOrganizer"></div>
-          <div class="form-group"><label>詳細リンク</label><input type="text" id="addLink" placeholder="https://..."></div>
-          <div class="form-group"><label>備考</label><input type="text" id="addRemark"></div>
-          <button onclick="submitNewEvent()" style="background-color: #2a9d8f;">✨ この内容でイベントを登録</button>
-        </div>
-      </div>
-
-      <div id="layerManage" class="admin-layer">
-        <div class="card">
-          <h2>🗑️ 掲載中イベントの管理</h2>
-          <div id="managementEventList">読み込み中...</div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-<script>
-  // 【重要】ご自身のGASウェブアプリのURLを貼り付けてください
-  const GAS_URL = "ここにあなたのGASウェブアプリURLを貼り付け";
-  const CORRECT_PASSCODE = "1353";
-  
-  let lockTimer = null;
-  let countdownTimer = null;
-  let timeLeft = 15 * 60;
-
-  window.onload = function() {
-    document.getElementById('passInput').focus();
-    document.getElementById('passInput').addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') verifyAdminCode();
-    });
-  };
-
-  function showAppError(message) {
-    const errorDiv = document.getElementById('appError');
-    errorDiv.innerText = message;
-    errorDiv.style.display = 'block';
-    document.getElementById('appSuccess').style.display = 'none';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  function showAppSuccess(message) {
-    const successDiv = document.getElementById('appSuccess');
-    successDiv.innerText = message;
-    successDiv.style.display = 'block';
-    document.getElementById('appError').style.display = 'none';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    setTimeout(() => { successDiv.style.display = 'none'; }, 5000);
-  }
-
-  // メニューの開閉コントロール
-  function toggleMenu() {
-    const menu = document.getElementById('sideMenu');
-    const overlay = document.getElementById('menuOverlay');
-    if (menu.classList.contains('open')) {
-      menu.classList.remove('open');
-      overlay.style.display = 'none';
-    } else {
-      menu.classList.add('open');
-      overlay.style.display = 'block';
-    }
-  }
-
-  // 【階層分け機能】表示レイヤーの切り替えロジック
-  function switchLayer(layerType) {
-    // 全レイヤーを一旦非表示
-    document.querySelectorAll('.admin-layer').forEach(layer => layer.style.display = 'none');
-    document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
-    
-    if (layerType === 'add') {
-      document.getElementById('layerAdd').style.display = 'block';
-      document.getElementById('menuItemAdd').classList.add('active');
-      document.getElementById('headerTitle').innerText = "管理画面 | 新規イベント登録";
-    } else if (layerType === 'manage') {
-      document.getElementById('layerManage').style.display = 'block';
-      document.getElementById('menuItemManage').classList.add('active');
-      document.getElementById('headerTitle').innerText = "管理画面 | 掲載中イベント管理";
-      loadManagementEvents(); // 管理画面用のデータ再取得をトリガー
-    }
-    toggleMenu(); // 切り替え後にメニューを閉じる
-    startLockTimers(); // 操作があったためタイマーリセット
-  }
-
-  function verifyAdminCode() {
-    const inputElement = document.getElementById('passInput');
-    const authCard = document.getElementById('authCard');
-    const code = inputElement.value;
-    
-    document.getElementById('appError').style.display = 'none';
-
-    if (code === CORRECT_PASSCODE) {
-      inputElement.value = '';
-      authCard.classList.remove('shake');
-      authCard.style.display = 'none';
-      document.getElementById('adminContent').style.display = 'block';
-      
-      // 認証成功したら三本線メニューを出せるようにする
-      document.getElementById('menuTrigger').style.display = 'flex';
-      document.getElementById('headerTitle').innerText = "管理画面 | 新規イベント登録";
-      
-      startLockTimers();
-    } else {
-      authCard.classList.remove('shake');
-      void authCard.offsetWidth;
-      authCard.classList.add('shake');
-      showAppError("❌ パスコードが正しくありません。もう一度入力してください。");
-      inputElement.value = '';
-      inputElement.focus();
-    }
-  }
-
-  function startLockTimers() {
-    if (lockTimer) clearTimeout(lockTimer);
-    if (countdownTimer) clearInterval(countdownTimer);
-    timeLeft = 15 * 60;
-    updateTimerDisplay();
-
-    countdownTimer = setInterval(() => {
-      timeLeft--;
-      updateTimerDisplay();
-      if (timeLeft <= 0) clearInterval(countdownTimer);
-    }, 1000);
-
-    lockTimer = setTimeout(() => { triggerAutoLock(); }, 15 * 60 * 1000);
-  }
-
-  function updateTimerDisplay() {
-    const minutes = Math.floor(timeLeft / 60);
-    const seconds = timeLeft % 60;
-    document.getElementById('countdownDisplay').innerText = `自動ロックまで: ${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
-  }
-
-  function triggerAutoLock() {
-    if (lockTimer) clearTimeout(lockTimer);
-    if (countdownTimer) clearInterval(countdownTimer);
-
-    document.getElementById('adminContent').style.display = 'none';
-    document.getElementById('authCard').style.display = 'block';
-    document.getElementById('menuTrigger').style.display = 'none'; // 三本線も隠す
-    document.getElementById('headerTitle').innerText = "運営管理者ポータル";
-    
-    // メニューが開いていたら閉じる
-    document.getElementById('sideMenu').classList.remove('open');
-    document.getElementById('menuOverlay').style.display = 'none';
-    
-    document.getElementById('passInput').value = '';
-    showAppError("🔒 15分が経過したため自動ロックがかかりました。");
-    document.getElementById('passInput').focus();
-  }
-
-  /**
-   * 【修正版】管理画面専用のAPIアクション（getAdminEvents）を叩いてデータを取得
-   */
-  function loadManagementEvents() {
-    const listDiv = document.getElementById('managementEventList');
-    listDiv.innerHTML = '最新データを取得中...';
-
-    fetch(GAS_URL, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'getAdminEvents', password: "amami_secret_2026" })
-    })
-    .then(res => res.json())
-    .then(events => {
-      listDiv.innerHTML = '';
-      if(!events || events.length === 0) { listDiv.innerHTML = '現在登録されているイベントはありません。'; return; }
-      
-      events.forEach(ev => {
-        const item = document.createElement('div');
-        item.className = 'event-list-item';
-        
-        // すでに非表示にされているものはグレーアウト表現にする
-        if (ev.status === 'hide') {
-          item.innerHTML = `
-            <div style="color: #999; text-decoration: line-through;"><strong>${ev.date}</strong> - ${ev.title}</div>
-            <span class="disabled-status">非表示設定済</span>
-          `;
-        } else {
-          item.innerHTML = `
-            <div><strong>${ev.date}</strong> - ${ev.title}</div>
-            <button class="danger-btn" onclick="hideEvent('${ev.eventId}')">非表示にする</button>
-          `;
-        }
-        listDiv.appendChild(item);
+    /**
+     * GASからイベント一覧データを非同期で取得
+     */
+    function loadEvents() {
+      fetch(GAS_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'getEvents' })
+      })
+      .then(res => res.json())
+      .then(events => {
+        renderEvents(events);
+      })
+      .catch(err => {
+        console.error("データ取得エラー:", err);
+        document.getElementById('calendarContainer').innerHTML = 
+          '<div style="text-align:center;color:#e63946;padding:20px;">データの読み込みに失敗しました。時間をおいて再度お試しください。</div>';
       });
-    })
-    .catch(err => showAppError("管理データの取得に失敗しました。GASの最新デプロイを確認してください。"));
-  }
+    }
 
-  function submitNewEvent() {
-    const title = document.getElementById('addTitle').value;
-    const date = document.getElementById('addDate').value;
-    if(!title || !date) { showAppError("⚠️ イベント名と開催日は必須項目です。"); return; }
+    /**
+     * 取得したイベントデータをカード型UIとして画面に描画
+     */
+    function renderEvents(events) {
+      const container = document.getElementById('calendarContainer');
+      container.innerHTML = '';
 
-    const payload = {
-      action: 'addEvent',
-      password: "amami_secret_2026",
-      title: title,
-      date: date.replace(/-/g, '/'),
-      time: document.getElementById('addTime').value,
-      location: document.getElementById('addLocation').value,
-      address: document.getElementById('addAddress').value,
-      organizer: document.getElementById('addOrganizer').value,
-      link: document.getElementById('addLink').value,
-      remark: document.getElementById('addRemark').value
-    };
+      if (!events || events.length === 0) {
+        container.innerHTML = '<div style="text-align:center;color:#777;padding:20px;">現在予定されているイベントはありません。</div>';
+        return;
+      }
 
-    fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) })
-    .then(res => res.json())
-    .then(data => {
-      if(data.success) {
-        showAppSuccess("🎉 イベントの追加サイト登録が完了しました！");
-        ['addTitle','addDate','addTime','addLocation','addAddress','addOrganizer','addLink','addRemark'].forEach(id => document.getElementById(id).value = '');
-        startLockTimers();
-      } else { showAppError("❌ 登録エラーが発生しました。"); }
-    })
-    .catch(err => showAppError("通信エラーが発生しました。"));
-  }
+      events.forEach(event => {
+        const card = document.createElement('div');
+        card.className = 'event-card';
+        card.innerHTML = `
+          <div class="card-body">
+            <div class="event-title">${event.title}</div>
+            <div class="info-line"><span class="info-label">開催日：</span><span class="info-value">${event.date}</span></div>
+            <div class="info-line"><span class="info-label">開始時刻：</span><span class="info-value">${event.time}</span></div>
+            <div class="info-line"><span class="info-label">開催場所：</span><span class="info-value">${event.location}</span></div>
+            <div class="info-line"><span class="info-label">住所：</span><span class="info-value">${event.address}</span></div>
+            <div class="info-line"><span class="info-label">運営主体：</span><span class="info-value">${event.organizer}</span></div>
+            <div class="info-line event-link"><span class="info-label">詳細リンク：</span><span class="info-value"><a href="${event.link}" target="_blank">詳細を見る</a></span></div>
+            ${event.remark ? `<div class="info-line" style="margin-top: 4px; font-size: 0.9rem; color: #666;"><span class="info-label">備考：</span><span class="info-value">${event.remark}</span></div>` : ''}
+          </div>
+          
+          <div class="card-footer">
+            <button class="action-btn comment-btn" id="comment-btn-${event.eventId}" onclick="toggleCommentSection('${event.eventId}')">
+              <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              <span id="comment-count-${event.eventId}">${event.comments.length}</span>
+            </button>
+            <button class="action-btn like-btn" id="like-btn-${event.eventId}" onclick="handleLike('${event.eventId}')">
+              <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              <span id="like-count-${event.eventId}">${event.likes}</span>
+            </button>
+          </div>
+          
+          <div class="comment-section" id="comment-section-${event.eventId}">
+            <div class="comment-input-wrap">
+              <input type="text" class="comment-input" id="input-${event.eventId}" placeholder="コメントを入力（新しい順に上に表示されます）...">
+              <button class="comment-submit-btn" onclick="submitComment('${event.eventId}')">送信</button>
+            </div>
+            <div class="comments-list" id="comments-list-${event.eventId}">
+              ${event.comments.map(c => `
+                <div class="comment-item">
+                  <div>${c.content}</div>
+                  <div class="comment-time">${c.timestamp}</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
 
-  function hideEvent(eventId) {
-    if(!confirm("このイベントを一般サイト上から非表示にしますか？")) return;
-    
-    fetch(GAS_URL, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'hideEvent', password: "amami_secret_2026", eventId: eventId })
-    })
-    .then(res => res.json())
-    .then(data => {
-      if(data.success) {
-        showAppSuccess("🗑️ イベントを非表示に設定しました。");
-        loadManagementEvents(); // リスト再読み込み
-        startLockTimers();
-      } else { showAppError("❌ 非表示処理に失敗しました。"); }
-    })
-    .catch(err => showAppError("通信エラーが発生しました。"));
-  }
-</script>
+    /**
+     * いいねボタン押下時のリアルタイム処理＆凹むアニメーション
+     */
+    function handleLike(eventId) {
+      const btn = document.getElementById(`like-btn-${eventId}`);
+      const countSpan = document.getElementById(`like-count-${eventId}`);
+      
+      // アニメーションを再トリガーするためのリフレッシュ
+      btn.classList.remove('liked');
+      void btn.offsetWidth; 
+      btn.classList.add('liked');
+
+      fetch(GAS_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'addLike', eventId: eventId })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          countSpan.innerText = data.newLikes; // リアルタイム変更
+        }
+      })
+      .catch(err => console.error("いいね送信エラー:", err));
+    }
+
+    /**
+     * コメントセクションの開閉（トグル表示）
+     */
+    function toggleCommentSection(eventId) {
+      const section = document.getElementById(`comment-section-${eventId}`);
+      const btn = document.getElementById(`comment-btn-${eventId}`);
+      
+      if (section.style.display === 'block') {
+        section.style.display = 'none';
+        btn.classList.remove('active');
+      } else {
+        section.style.display = 'block';
+        btn.classList.add('active');
+        document.getElementById(`input-${eventId}`).focus();
+      }
+    }
+
+    /**
+     * コメントのリアルタイム送信（新しい順に上に追加）
+     */
+    function submitComment(eventId) {
+      const input = document.getElementById(`input-${eventId}`);
+      const commentText = input.value.trim();
+      if (!commentText) return;
+
+      fetch(GAS_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'addComment', eventId: eventId, comment: commentText })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          input.value = ''; // 入力欄をクリア
+          
+          // 新しいコメントをリストの一番先頭（上）にリアルタイム挿入
+          const list = document.getElementById(`comments-list-${eventId}`);
+          const newItem = document.createElement('div');
+          newItem.className = 'comment-item';
+          newItem.innerHTML = `
+            <div>${data.comment.content}</div>
+            <div class="comment-time">${data.comment.timestamp}</div>
+          `;
+          list.insertBefore(newItem, list.firstChild);
+
+          // コメントカウンターの数値をリアルタイム加算
+          const countSpan = document.getElementById(`comment-count-${eventId}`);
+          countSpan.innerText = parseInt(countSpan.innerText) + 1;
+        }
+      })
+      .catch(err => console.error("コメント送信エラー:", err));
+    }
+  </script>
 </body>
 </html>
