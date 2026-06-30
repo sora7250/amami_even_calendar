@@ -14,7 +14,7 @@
       padding: 0;
     }
     
-    /* 上部ヘッダーバーのスタイリング */
+    /* 上部ヘッダーバー */
     .header-bar {
       background-color: #2b7a9e;
       color: white;
@@ -51,7 +51,7 @@
     .side-menu {
       position: fixed;
       top: 0;
-      left: -260px; /* 初期状態は画面外に隠す */
+      left: -260px; /* 初期状態は隠す */
       width: 240px;
       height: 100%;
       background-color: #1d5670;
@@ -62,7 +62,7 @@
       box-sizing: border-box;
     }
     .side-menu.open {
-      left: 0; /* メニューを開く */
+      left: 0; /* 開く */
     }
     .side-menu h3 {
       color: #b0cddb;
@@ -86,7 +86,7 @@
       background-color: #2b7a9e;
     }
 
-    /* メニューを開いている時の背景の黒い影 */
+    /* メニュー背景の影 */
     .menu-overlay {
       position: fixed;
       top: 0;
@@ -129,6 +129,9 @@
       font-size: 1rem;
       outline: none;
     }
+    input[type="password"]:focus, input[type="text"]:focus, input[type="date"]:focus {
+      border-color: #2b7a9e;
+    }
     button {
       width: 100%;
       padding: 12px;
@@ -141,18 +144,22 @@
       cursor: pointer;
     }
     
-    /* メッセージ通知エリア */
-    .error-message { color: #e63946; background-color: #fff5f5; border: 1px solid #ffcccc; padding: 10px; border-radius: 6px; text-align: center; margin-bottom: 15px; display: none; }
-    .success-message { color: #2a9d8f; background-color: #f0fbf9; border: 1px solid #cceee9; padding: 10px; border-radius: 6px; text-align: center; margin-bottom: 15px; display: none; }
+    /* アプリ統一メッセージ通知エリア */
+    .error-message { color: #e63946; background-color: #fff5f5; border: 1px solid #ffcccc; padding: 10px; border-radius: 6px; text-align: center; margin-bottom: 15px; display: none; font-size: 0.9rem; }
+    .success-message { color: #2a9d8f; background-color: #f0fbf9; border: 1px solid #cceee9; padding: 10px; border-radius: 6px; text-align: center; margin-bottom: 15px; display: none; font-size: 0.9rem; }
 
-    /* パスコード誤入力時の横揺れ */
-    .shake { animation: shake-animation 0.4s ease-in-out; border: 2px solid #e63946 !important; }
+    /* 【演出要件】パスコード誤入力時の細かく短い横揺れアニメーション */
+    .shake { 
+      animation: shake-animation 0.4s ease-in-out; 
+      border: 2px solid #e63946 !important; 
+    }
     @keyframes shake-animation {
       0%, 100% { transform: translateX(0); }
       20%, 60% { transform: translateX(-8px); }
       40%, 80% { transform: translateX(8px); }
     }
 
+    /* タイマーバー */
     .timer-bar {
       background-color: #e2ebee;
       color: #2b7a9e;
@@ -165,6 +172,7 @@
       margin-bottom: 15px;
     }
     .danger-btn { background-color: #e63946; padding: 6px 12px; width: auto; font-size: 0.85rem; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    .danger-btn:hover { background-color: #c92a3a; }
     .disabled-status { color: #999; font-style: italic; font-size: 0.85rem; }
     
     .event-list-item {
@@ -175,7 +183,7 @@
       border-bottom: 1px solid #eee;
     }
     
-    /* 階層（レイヤー）切り替え用の非表示クラス */
+    /* レイヤー表示切り替え用 */
     .admin-layer { display: none; }
     #authCard { display: block; }
     #adminContent { display: none; }
@@ -204,7 +212,7 @@
 
     <div class="card" id="authCard">
       <h2>🔑 セキュリティ認証</h2>
-      <p style="font-size:0.85rem; color:#666; text-align:center; margin-top:-10px;">安全のため、1353を入力してください</p>
+      <p style="font-size:0.85rem; color:#666; text-align:center; margin-top:-10px;">安全のため、パスコードを入力してください</p>
       <div class="form-group">
         <input type="password" id="passInput" placeholder="4桁のパスコードを入力" maxlength="4" pattern="\d*">
       </div>
@@ -213,7 +221,7 @@
 
     <div id="adminContent">
       <div class="timer-bar">
-        <span>🔐 セキュリティ維持モード</span>
+        <span>🔐 セキュリティ維持モード作動中</span>
         <span id="countdownDisplay">自動ロックまで: 15:00</span>
       </div>
       
@@ -243,14 +251,17 @@
   </div>
 
 <script>
-  // 【重要】ご自身のGASウェブアプリのURLを貼り付けてください
-  const GAS_URL = "https://script.google.com/macros/s/AKfycbxXIxVslOIdK2SZbVepzVixzcAMxKgvTWtZDsvUUMPURl7XoUXXkR3roUfWUcbMH1ZH/exec";
+  // 【重要】管理者専用に新規作成した「admin用GASウェブアプリのURL」を貼り付けてください
+  const GAS_URL = "ここにあなたの管理者用GASウェブアプリURLを貼り付け";
+  
+  // 要件定義の固定パスコード
   const CORRECT_PASSCODE = "1353";
   
   let lockTimer = null;
   let countdownTimer = null;
-  let timeLeft = 15 * 60;
+  let timeLeft = 15 * 60; // 15分（秒換算）
 
+  // 起動時の初期設定
   window.onload = function() {
     document.getElementById('passInput').focus();
     document.getElementById('passInput').addEventListener('keypress', function(e) {
@@ -258,6 +269,9 @@
     });
   };
 
+  /**
+   * アプリ標準に統一されたエラーメッセージの表示
+   */
   function showAppError(message) {
     const errorDiv = document.getElementById('appError');
     errorDiv.innerText = message;
@@ -266,6 +280,9 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  /**
+   * アプリ標準に統一された成功メッセージの表示
+   */
   function showAppSuccess(message) {
     const successDiv = document.getElementById('appSuccess');
     successDiv.innerText = message;
@@ -275,7 +292,9 @@
     setTimeout(() => { successDiv.style.display = 'none'; }, 5000);
   }
 
-  // メニューの開閉コントロール
+  /**
+   * 三本線メニューの開閉
+   */
   function toggleMenu() {
     const menu = document.getElementById('sideMenu');
     const overlay = document.getElementById('menuOverlay');
@@ -288,9 +307,10 @@
     }
   }
 
-  // 【階層分け機能】表示レイヤーの切り替えロジック
+  /**
+   * 【階層分け】表示する画面（レイヤー）の切り替え
+   */
   function switchLayer(layerType) {
-    // 全レイヤーを一旦非表示
     document.querySelectorAll('.admin-layer').forEach(layer => layer.style.display = 'none');
     document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
     
@@ -302,12 +322,15 @@
       document.getElementById('layerManage').style.display = 'block';
       document.getElementById('menuItemManage').classList.add('active');
       document.getElementById('headerTitle').innerText = "管理画面 | 掲載中イベント管理";
-      loadManagementEvents(); // 管理画面用のデータ再取得をトリガー
+      loadManagementEvents(); // 切り替え時に最新リストを読込
     }
-    toggleMenu(); // 切り替え後にメニューを閉じる
-    startLockTimers(); // 操作があったためタイマーリセット
+    toggleMenu();
+    startLockTimers(); // 操作があったため15分カウントを最初からやり直し
   }
 
+  /**
+   * パスコード検証と横揺れ演出
+   */
   function verifyAdminCode() {
     const inputElement = document.getElementById('passInput');
     const authCard = document.getElementById('authCard');
@@ -321,25 +344,33 @@
       authCard.style.display = 'none';
       document.getElementById('adminContent').style.display = 'block';
       
-      // 認証成功したら三本線メニューを出せるようにする
+      // 認証成功で三本線メニューを活性化
       document.getElementById('menuTrigger').style.display = 'flex';
       document.getElementById('headerTitle').innerText = "管理画面 | 新規イベント登録";
       
+      // 15分タイマーループ開始
       startLockTimers();
     } else {
+      // パスコードミス時に細かく短く揺れるアニメーションを発動
       authCard.classList.remove('shake');
-      void authCard.offsetWidth;
+      void authCard.offsetWidth; // リフレッシュトリック
       authCard.classList.add('shake');
+      
+      // アプリ標準に統一されたエラー通知
       showAppError("❌ パスコードが正しくありません。もう一度入力してください。");
       inputElement.value = '';
       inputElement.focus();
     }
   }
 
+  /**
+   * 15分自動ロックタイマーのループ制御
+   */
   function startLockTimers() {
     if (lockTimer) clearTimeout(lockTimer);
     if (countdownTimer) clearInterval(countdownTimer);
-    timeLeft = 15 * 60;
+    
+    timeLeft = 15 * 60; // 15分にリセットしてカウント
     updateTimerDisplay();
 
     countdownTimer = setInterval(() => {
@@ -357,34 +388,36 @@
     document.getElementById('countdownDisplay').innerText = `自動ロックまで: ${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
   }
 
+  /**
+   * 自動ロック発動処理
+   */
   function triggerAutoLock() {
     if (lockTimer) clearTimeout(lockTimer);
     if (countdownTimer) clearInterval(countdownTimer);
 
     document.getElementById('adminContent').style.display = 'none';
     document.getElementById('authCard').style.display = 'block';
-    document.getElementById('menuTrigger').style.display = 'none'; // 三本線も隠す
+    document.getElementById('menuTrigger').style.display = 'none';
     document.getElementById('headerTitle').innerText = "運営管理者ポータル";
     
-    // メニューが開いていたら閉じる
     document.getElementById('sideMenu').classList.remove('open');
     document.getElementById('menuOverlay').style.display = 'none';
     
     document.getElementById('passInput').value = '';
-    showAppError("🔒 15分が経過したため自動ロックがかかりました。");
+    showAppError("🔒 安全のため、15分間操作がなかったか、手動ロックが行われたため画面をロックしました。再度パスコードを入力してください。");
     document.getElementById('passInput').focus();
   }
 
   /**
-   * 【修正版】管理画面専用のAPIアクション（getAdminEvents）を叩いてデータを取得
+   * 【修正版】独立したadmin専用APIから掲載中・非表示すべてのデータを取得
    */
   function loadManagementEvents() {
     const listDiv = document.getElementById('managementEventList');
-    listDiv.innerHTML = '最新データを取得中...';
+    listDiv.innerHTML = '最新のデータを安全に取得中...';
 
     fetch(GAS_URL, {
       method: 'POST',
-      body: JSON.stringify({ action: 'getAdminEvents', password: "amami_secret_2026" })
+      body: JSON.stringify({ action: 'getAdminEvents', password: CORRECT_PASSCODE })
     })
     .then(res => res.json())
     .then(events => {
@@ -395,7 +428,6 @@
         const item = document.createElement('div');
         item.className = 'event-list-item';
         
-        // すでに非表示にされているものはグレーアウト表現にする
         if (ev.status === 'hide') {
           item.innerHTML = `
             <div style="color: #999; text-decoration: line-through;"><strong>${ev.date}</strong> - ${ev.title}</div>
@@ -410,9 +442,12 @@
         listDiv.appendChild(item);
       });
     })
-    .catch(err => showAppError("管理データの取得に失敗しました。GASの最新デプロイを確認してください。"));
+    .catch(err => showAppError("管理データの取得に失敗しました。管理者専用GASの最新デプロイとURLを確認してください。"));
   }
 
+  /**
+   * 新規イベントの追加投稿
+   */
   function submitNewEvent() {
     const title = document.getElementById('addTitle').value;
     const date = document.getElementById('addDate').value;
@@ -420,7 +455,7 @@
 
     const payload = {
       action: 'addEvent',
-      password: "amami_secret_2026",
+      password: CORRECT_PASSCODE,
       title: title,
       date: date.replace(/-/g, '/'),
       time: document.getElementById('addTime').value,
@@ -435,27 +470,30 @@
     .then(res => res.json())
     .then(data => {
       if(data.success) {
-        showAppSuccess("🎉 イベントの追加サイト登録が完了しました！");
+        showAppSuccess("🎉 イベントの追加サイト登録がスプレッドシートへ正常に完了しました！");
         ['addTitle','addDate','addTime','addLocation','addAddress','addOrganizer','addLink','addRemark'].forEach(id => document.getElementById(id).value = '');
-        startLockTimers();
+        startLockTimers(); // 操作があったためタイマーリスタート
       } else { showAppError("❌ 登録エラーが発生しました。"); }
     })
-    .catch(err => showAppError("通信エラーが発生しました。"));
+    .catch(err => showAppError("通信エラーが発生しました。イベントを登録できません。"));
   }
 
+  /**
+   * 指定イベントの非表示化
+   */
   function hideEvent(eventId) {
     if(!confirm("このイベントを一般サイト上から非表示にしますか？")) return;
     
     fetch(GAS_URL, {
       method: 'POST',
-      body: JSON.stringify({ action: 'hideEvent', password: "amami_secret_2026", eventId: eventId })
+      body: JSON.stringify({ action: 'hideEvent', password: CORRECT_PASSCODE, eventId: eventId })
     })
     .then(res => res.json())
     .then(data => {
       if(data.success) {
-        showAppSuccess("🗑️ イベントを非表示に設定しました。");
-        loadManagementEvents(); // リスト再読み込み
-        startLockTimers();
+        showAppSuccess("🗑️ 指定されたイベントを非表示に設定しました。");
+        loadManagementEvents(); // リストの再描画
+        startLockTimers(); // 操作があったためタイマーリスタート
       } else { showAppError("❌ 非表示処理に失敗しました。"); }
     })
     .catch(err => showAppError("通信エラーが発生しました。"));
