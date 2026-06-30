@@ -11,15 +11,98 @@
       background-color: #f4f7f6;
       color: #333;
       margin: 0;
-      padding: 15px;
+      padding: 0;
     }
-    .container {
+    
+    /* 上部ヘッダーバーのスタイリング */
+    .header-bar {
+      background-color: #2b7a9e;
+      color: white;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      position: relative;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    /* 三本線（ハンバーガー）ボタン */
+    .menu-trigger {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 5px;
+      display: none; /* 初期（認証前）は非表示 */
+      align-items: center;
+    }
+    .menu-trigger svg {
+      width: 28px;
+      height: 28px;
+      fill: white;
+    }
+
+    .header-title {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin-left: 15px;
+      flex-grow: 1;
+    }
+
+    /* スライド式サイドメニュー */
+    .side-menu {
+      position: fixed;
+      top: 0;
+      left: -260px; /* 初期状態は画面外に隠す */
+      width: 240px;
+      height: 100%;
+      background-color: #1d5670;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+      z-index: 100;
+      transition: left 0.3s ease;
+      padding: 20px 10px;
+      box-sizing: border-box;
+    }
+    .side-menu.open {
+      left: 0; /* メニューを開く */
+    }
+    .side-menu h3 {
+      color: #b0cddb;
+      font-size: 0.9rem;
+      border-bottom: 1px solid #2b7a9e;
+      padding-bottom: 10px;
+      margin-top: 10px;
+    }
+    .menu-item {
+      display: block;
+      color: white;
+      text-decoration: none;
+      padding: 12px 15px;
+      border-radius: 6px;
+      margin-bottom: 5px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .menu-item:hover, .menu-item.active {
+      background-color: #2b7a9e;
+    }
+
+    /* メニューを開いている時の背景の黒い影 */
+    .menu-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.4);
+      z-index: 90;
+      display: none;
+    }
+
+    .main-container {
       max-width: 600px;
       margin: 0 auto;
-    }
-    h1, h2 {
-      color: #2c3e50;
-      text-align: center;
+      padding: 15px;
+      box-sizing: border-box;
     }
     .card {
       background: #fff;
@@ -29,9 +112,7 @@
       margin-bottom: 20px;
       transition: all 0.3s ease;
     }
-    .form-group {
-      margin-bottom: 12px;
-    }
+    .form-group { margin-bottom: 12px; }
     label {
       display: block;
       font-weight: bold;
@@ -48,9 +129,6 @@
       font-size: 1rem;
       outline: none;
     }
-    input[type="password"]:focus, input[type="text"]:focus {
-      border-color: #2b7a9e;
-    }
     button {
       width: 100%;
       padding: 12px;
@@ -62,46 +140,19 @@
       font-weight: bold;
       cursor: pointer;
     }
-    button:hover { background-color: #1d5670; }
     
-    /* アプリ統一エラーメッセージのスタイリング */
-    .error-message {
-      color: #e63946;
-      background-color: #fff5f5;
-      border: 1px solid #ffcccc;
-      padding: 10px;
-      border-radius: 6px;
-      text-align: center;
-      margin-bottom: 15px;
-      font-size: 0.9rem;
-      display: none; /* 初期は非表示 */
-    }
-    
-    .success-message {
-      color: #2a9d8f;
-      background-color: #f0fbf9;
-      border: 1px solid #cceee9;
-      padding: 10px;
-      border-radius: 6px;
-      text-align: center;
-      margin-bottom: 15px;
-      font-size: 0.9rem;
-      display: none;
-    }
+    /* メッセージ通知エリア */
+    .error-message { color: #e63946; background-color: #fff5f5; border: 1px solid #ffcccc; padding: 10px; border-radius: 6px; text-align: center; margin-bottom: 15px; display: none; }
+    .success-message { color: #2a9d8f; background-color: #f0fbf9; border: 1px solid #cceee9; padding: 10px; border-radius: 6px; text-align: center; margin-bottom: 15px; display: none; }
 
-    /* 【新規】パスコード誤入力時の細かく短い横揺れアニメーション */
-    .shake {
-      animation: shake-animation 0.4s ease-in-out;
-      border: 2px solid #e63946 !important; /* 枠線を赤く */
-    }
-
+    /* パスコード誤入力時の横揺れ */
+    .shake { animation: shake-animation 0.4s ease-in-out; border: 2px solid #e63946 !important; }
     @keyframes shake-animation {
       0%, 100% { transform: translateX(0); }
       20%, 60% { transform: translateX(-8px); }
       40%, 80% { transform: translateX(8px); }
     }
 
-    /* タイマー表示用ステータスバー */
     .timer-bar {
       background-color: #e2ebee;
       color: #2b7a9e;
@@ -111,17 +162,10 @@
       font-weight: bold;
       display: flex;
       justify-content: space-between;
-      align-items: center;
       margin-bottom: 15px;
     }
-
-    .danger-btn {
-      background-color: #e63946;
-      padding: 6px 12px;
-      width: auto;
-      font-size: 0.85rem;
-    }
-    .danger-btn:hover { background-color: #c92a3a; }
+    .danger-btn { background-color: #e63946; padding: 6px 12px; width: auto; font-size: 0.85rem; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    .disabled-status { color: #999; font-style: italic; font-size: 0.85rem; }
     
     .event-list-item {
       display: flex;
@@ -131,219 +175,244 @@
       border-bottom: 1px solid #eee;
     }
     
-    /* 表示切り替え用エリア */
-    #adminContent { display: none; }
+    /* 階層（レイヤー）切り替え用の非表示クラス */
+    .admin-layer { display: none; }
     #authCard { display: block; }
+    #adminContent { display: none; }
   </style>
 </head>
 <body>
-<div class="container">
 
-  <h1>⚙️ 運営管理者ポータル</h1>
-
-  <div id="appError" class="error-message"></div>
-  <div id="appSuccess" class="success-message"></div>
-
-  <div class="card" id="authCard">
-    <h2>🔑 セキュリティ認証</h2>
-    <p style="font-size:0.85rem; color:#666; text-align:center; margin-top:-10px;">安全のため、1353を入力してください</p>
-    <div class="form-group">
-      <input type="password" id="passInput" placeholder="4桁のパスコードを入力" maxlength="4" pattern="\d*">
-    </div>
-    <button onclick="verifyAdminCode()">ロック解除</button>
+  <div class="header-bar">
+    <button class="menu-trigger" id="menuTrigger" onclick="toggleMenu()">
+      <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+    </button>
+    <div class="header-title" id="headerTitle">運営管理者ポータル</div>
   </div>
 
-  <div id="adminContent">
-    
-    <div class="timer-bar">
-      <span>🔐 セキュリティ維持モード作動中</span>
-      <span id="countdownDisplay">自動ロックまで: 15:00</span>
-    </div>
-    
-    <div class="card">
-      <h2>📅 新規イベントの追加</h2>
-      <div class="form-group"><label>イベント名</label><input type="text" id="addTitle"></div>
-      <div class="form-group"><label>開催日</label><input type="date" id="addDate"></div>
-      <div class="form-group"><label>開始時刻</label><input type="text" id="addTime" placeholder="例: 13:00"></div>
-      <div class="form-group"><label>開催場所</label><input type="text" id="addLocation"></div>
-      <div class="form-group"><label>住所</label><input type="text" id="addAddress"></div>
-      <div class="form-group"><label>運営主体</label><input type="text" id="addOrganizer"></div>
-      <div class="form-group"><label>詳細リンク</label><input type="text" id="addLink" placeholder="https://..."></div>
-      <div class="form-group"><label>備考</label><input type="text" id="addRemark"></div>
-      <button onclick="submitNewEvent()" style="background-color: #2a9d8f;">✨ この内容でイベントを登録</button>
+  <div class="side-menu" id="sideMenu">
+    <h3>MENU</h3>
+    <div class="menu-item active" id="menuItemAdd" onclick="switchLayer('add')">📅 新規イベントの登録</div>
+    <div class="menu-item" id="menuItemManage" onclick="switchLayer('manage')">🗑️ 掲載中イベントの管理</div>
+    <div class="menu-item" style="margin-top: 30px; background-color: #c92a3a; text-align: center;" onclick="triggerAutoLock()">🔒 画面をロックする</div>
+  </div>
+  <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+
+  <div class="main-container">
+    <div id="appError" class="error-message"></div>
+    <div id="appSuccess" class="success-message"></div>
+
+    <div class="card" id="authCard">
+      <h2>🔑 セキュリティ認証</h2>
+      <p style="font-size:0.85rem; color:#666; text-align:center; margin-top:-10px;">安全のため、1353を入力してください</p>
+      <div class="form-group">
+        <input type="password" id="passInput" placeholder="4桁のパスコードを入力" maxlength="4" pattern="\d*">
+      </div>
+      <button onclick="verifyAdminCode()">ロック解除</button>
     </div>
 
-    <div class="card">
-      <h2>🗑️ 掲載中イベントの管理 (非表示設定)</h2>
-      <div id="managementEventList">読み込み中...</div>
+    <div id="adminContent">
+      <div class="timer-bar">
+        <span>🔐 セキュリティ維持モード</span>
+        <span id="countdownDisplay">自動ロックまで: 15:00</span>
+      </div>
+      
+      <div id="layerAdd" class="admin-layer" style="display: block;">
+        <div class="card">
+          <h2>📅 新規イベントの追加サイト登録</h2>
+          <div class="form-group"><label>イベント名</label><input type="text" id="addTitle"></div>
+          <div class="form-group"><label>開催日</label><input type="date" id="addDate"></div>
+          <div class="form-group"><label>開始時刻</label><input type="text" id="addTime" placeholder="例: 13:00"></div>
+          <div class="form-group"><label>開催場所</label><input type="text" id="addLocation"></div>
+          <div class="form-group"><label>住所</label><input type="text" id="addAddress"></div>
+          <div class="form-group"><label>運営主体</label><input type="text" id="addOrganizer"></div>
+          <div class="form-group"><label>詳細リンク</label><input type="text" id="addLink" placeholder="https://..."></div>
+          <div class="form-group"><label>備考</label><input type="text" id="addRemark"></div>
+          <button onclick="submitNewEvent()" style="background-color: #2a9d8f;">✨ この内容でイベントを登録</button>
+        </div>
+      </div>
+
+      <div id="layerManage" class="admin-layer">
+        <div class="card">
+          <h2>🗑️ 掲載中イベントの管理</h2>
+          <div id="managementEventList">読み込み中...</div>
+        </div>
+      </div>
     </div>
 
   </div>
-</div>
 
 <script>
-  // 【重要】ご自身のGASウェブアプリのURL（/execで終わるもの）を貼り付けてください
+  // 【重要】ご自身のGASウェブアプリのURLを貼り付けてください
   const GAS_URL = "https://script.google.com/macros/s/AKfycbwbQYHy4tXJXPo7G1FimintcsiIzwLf1q2G0e0-jM3_NbMTaf96-sJ6I3KW0UD7OHSfUQ/exec";
-
-  // 要件定義で指定されたパスコード
   const CORRECT_PASSCODE = "1353";
   
   let lockTimer = null;
   let countdownTimer = null;
-  let timeLeft = 15 * 60; // 15分（秒換算）
+  let timeLeft = 15 * 60;
 
-  // 画面を開くたびに強制的にパスコード入力を求める（初期化）
   window.onload = function() {
-    document.getElementById('authCard').style.display = 'block';
-    document.getElementById('adminContent').style.display = 'none';
     document.getElementById('passInput').focus();
-    
-    // Enterキーでも送信できるようにイベントリスナーを追加
     document.getElementById('passInput').addEventListener('keypress', function(e) {
       if (e.key === 'Enter') verifyAdminCode();
     });
   };
 
-  /**
-   * アプリ統一のカスタム通知（エラー）を表示する関数
-   */
   function showAppError(message) {
     const errorDiv = document.getElementById('appError');
     errorDiv.innerText = message;
     errorDiv.style.display = 'block';
     document.getElementById('appSuccess').style.display = 'none';
-    
-    // スマホ画面の上部にスクロールして視認させる
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  /**
-   * アプリ統一のカスタム通知（成功）を表示する関数
-   */
   function showAppSuccess(message) {
     const successDiv = document.getElementById('appSuccess');
     successDiv.innerText = message;
     successDiv.style.display = 'block';
     document.getElementById('appError').style.display = 'none';
-    
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    // 5秒後に自動で消す
     setTimeout(() => { successDiv.style.display = 'none'; }, 5000);
   }
 
-  /**
-   * パスコードの検証と横揺れアニメーション
-   */
+  // メニューの開閉コントロール
+  function toggleMenu() {
+    const menu = document.getElementById('sideMenu');
+    const overlay = document.getElementById('menuOverlay');
+    if (menu.classList.contains('open')) {
+      menu.classList.remove('open');
+      overlay.style.display = 'none';
+    } else {
+      menu.classList.add('open');
+      overlay.style.display = 'block';
+    }
+  }
+
+  // 【階層分け機能】表示レイヤーの切り替えロジック
+  function switchLayer(layerType) {
+    // 全レイヤーを一旦非表示
+    document.querySelectorAll('.admin-layer').forEach(layer => layer.style.display = 'none');
+    document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
+    
+    if (layerType === 'add') {
+      document.getElementById('layerAdd').style.display = 'block';
+      document.getElementById('menuItemAdd').classList.add('active');
+      document.getElementById('headerTitle').innerText = "管理画面 | 新規イベント登録";
+    } else if (layerType === 'manage') {
+      document.getElementById('layerManage').style.display = 'block';
+      document.getElementById('menuItemManage').classList.add('active');
+      document.getElementById('headerTitle').innerText = "管理画面 | 掲載中イベント管理";
+      loadManagementEvents(); // 管理画面用のデータ再取得をトリガー
+    }
+    toggleMenu(); // 切り替え後にメニューを閉じる
+    startLockTimers(); // 操作があったためタイマーリセット
+  }
+
   function verifyAdminCode() {
     const inputElement = document.getElementById('passInput');
     const authCard = document.getElementById('authCard');
     const code = inputElement.value;
     
-    // メッセージエリアを一旦初期化
     document.getElementById('appError').style.display = 'none';
 
     if (code === CORRECT_PASSCODE) {
-      // 認証成功の挙動
       inputElement.value = '';
       authCard.classList.remove('shake');
-      
-      // 画面の切り替え
       authCard.style.display = 'none';
       document.getElementById('adminContent').style.display = 'block';
       
-      // イベント一覧のロード
-      loadManagementEvents();
+      // 認証成功したら三本線メニューを出せるようにする
+      document.getElementById('menuTrigger').style.display = 'flex';
+      document.getElementById('headerTitle').innerText = "管理画面 | 新規イベント登録";
       
-      // 【ループ機構】15分のタイマーとカウントダウンをリスタート
       startLockTimers();
     } else {
-      // 【要件】パスコード間違い時の横揺れアニメーション発動
       authCard.classList.remove('shake');
-      void authCard.offsetWidth; // リフレッシュトリックでアニメーションを再トリガー
+      void authCard.offsetWidth;
       authCard.classList.add('shake');
-      
-      // 【要件】ブラウザの標準alertではなくアプリ統一のエラー表示
       showAppError("❌ パスコードが正しくありません。もう一度入力してください。");
       inputElement.value = '';
       inputElement.focus();
     }
   }
 
-  /**
-   * 15分タイマーとカウントダウンの開始・リセット処理
-   */
   function startLockTimers() {
-    // 既存のタイマーがあれば完全にクリアして多重ループを防ぐ
     if (lockTimer) clearTimeout(lockTimer);
     if (countdownTimer) clearInterval(countdownTimer);
-    
-    timeLeft = 15 * 60; // 15分にリセット
+    timeLeft = 15 * 60;
     updateTimerDisplay();
 
-    // 1. 1秒ごとにカウントダウン表示を更新するループ
     countdownTimer = setInterval(() => {
       timeLeft--;
       updateTimerDisplay();
-      if (timeLeft <= 0) {
-        clearInterval(countdownTimer);
-      }
+      if (timeLeft <= 0) clearInterval(countdownTimer);
     }, 1000);
 
-    // 2. 15分後に自動的に画面をロックするメインタイマー
-    lockTimer = setTimeout(() => {
-      triggerAutoLock();
-    }, 15 * 60 * 1000);
+    lockTimer = setTimeout(() => { triggerAutoLock(); }, 15 * 60 * 1000);
   }
 
-  /**
-   * カウントダウンの文字表示を更新 (分:秒)
-   */
   function updateTimerDisplay() {
     const minutes = Math.floor(timeLeft / 60);
     const seconds = timeLeft % 60;
-    const formattedSeconds = seconds < 10 ? '0' + seconds : seconds;
-    document.getElementById('countdownDisplay').innerText = `自動ロックまで: ${minutes}:${formattedSeconds}`;
+    document.getElementById('countdownDisplay').innerText = `自動ロックまで: ${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
   }
 
-  /**
-   * 15分経過時の自動ロック発動処理
-   */
   function triggerAutoLock() {
-    // 全タイマーをクリア
     if (lockTimer) clearTimeout(lockTimer);
     if (countdownTimer) clearInterval(countdownTimer);
 
-    // 画面を認証状態に戻す
     document.getElementById('adminContent').style.display = 'none';
     document.getElementById('authCard').style.display = 'block';
+    document.getElementById('menuTrigger').style.display = 'none'; // 三本線も隠す
+    document.getElementById('headerTitle').innerText = "運営管理者ポータル";
+    
+    // メニューが開いていたら閉じる
+    document.getElementById('sideMenu').classList.remove('open');
+    document.getElementById('menuOverlay').style.display = 'none';
     
     document.getElementById('passInput').value = '';
-    showAppError("🔒 安全のため、15分が経過したため自動ロックがかかりました。再度パスコードを入力してください。");
+    showAppError("🔒 15分が経過したため自動ロックがかかりました。");
     document.getElementById('passInput').focus();
   }
+
+  /**
+   * 【修正版】管理画面専用のAPIアクション（getAdminEvents）を叩いてデータを取得
+   */
   function loadManagementEvents() {
+    const listDiv = document.getElementById('managementEventList');
+    listDiv.innerHTML = '最新データを取得中...';
+
     fetch(GAS_URL, {
       method: 'POST',
-      body: JSON.stringify({ action: 'getEvents' })
+      body: JSON.stringify({ action: 'getAdminEvents', password: "amami_secret_2026" })
     })
     .then(res => res.json())
     .then(events => {
-      const listDiv = document.getElementById('managementEventList');
       listDiv.innerHTML = '';
-      if(events.length === 0) { listDiv.innerHTML = '現在掲載中のイベントはありません。'; return; }
+      if(!events || events.length === 0) { listDiv.innerHTML = '現在登録されているイベントはありません。'; return; }
       
       events.forEach(ev => {
         const item = document.createElement('div');
         item.className = 'event-list-item';
-        item.innerHTML = `
-          <div><strong>${ev.date}</strong> - ${ev.title}</div>
-          <button class="danger-btn" onclick="hideEvent('${ev.eventId}')">非表示</button>
-        `;
+        
+        // すでに非表示にされているものはグレーアウト表現にする
+        if (ev.status === 'hide') {
+          item.innerHTML = `
+            <div style="color: #999; text-decoration: line-through;"><strong>${ev.date}</strong> - ${ev.title}</div>
+            <span class="disabled-status">非表示設定済</span>
+          `;
+        } else {
+          item.innerHTML = `
+            <div><strong>${ev.date}</strong> - ${ev.title}</div>
+            <button class="danger-btn" onclick="hideEvent('${ev.eventId}')">非表示にする</button>
+          `;
+        }
         listDiv.appendChild(item);
       });
     })
-    .catch(err => showAppError("データ取得に失敗しました。接続を確認してください。"));
+    .catch(err => showAppError("管理データの取得に失敗しました。GASの最新デプロイを確認してください。"));
   }
+
   function submitNewEvent() {
     const title = document.getElementById('addTitle').value;
     const date = document.getElementById('addDate').value;
@@ -366,35 +435,30 @@
     .then(res => res.json())
     .then(data => {
       if(data.success) {
-        showAppSuccess("🎉 イベントをスプレッドシートに正常に登録しました！");
+        showAppSuccess("🎉 イベントの追加サイト登録が完了しました！");
         ['addTitle','addDate','addTime','addLocation','addAddress','addOrganizer','addLink','addRemark'].forEach(id => document.getElementById(id).value = '');
-        loadManagementEvents();
         startLockTimers();
-      } else { 
-        showAppError("❌ 登録エラーが発生しました。GASの設定を確認してください。"); 
-      }
+      } else { showAppError("❌ 登録エラーが発生しました。"); }
     })
-    .catch(err => showAppError("通信エラーが発生しました。イベントを登録できません。"));
+    .catch(err => showAppError("通信エラーが発生しました。"));
   }
+
   function hideEvent(eventId) {
-    if(!confirm("このイベントをサイト上から非表示にしますか？")) return;
+    if(!confirm("このイベントを一般サイト上から非表示にしますか？")) return;
     
     fetch(GAS_URL, {
       method: 'POST',
-      body: JSON.stringify({ action: 'hideEvent', eventId: eventId, password: "amami_secret_2026" })
+      body: JSON.stringify({ action: 'hideEvent', password: "amami_secret_2026", eventId: eventId })
     })
     .then(res => res.json())
     .then(data => {
       if(data.success) {
-        showAppSuccess("🗑️ イベントをサイト上から非表示に設定しました。");
-        loadManagementEvents();
-        // 操作があったため、15分タイマーをリスタート
+        showAppSuccess("🗑️ イベントを非表示に設定しました。");
+        loadManagementEvents(); // リスト再読み込み
         startLockTimers();
-      } else { 
-        showAppError("❌ 非表示処理中にエラーが発生しました。"); 
-      }
+      } else { showAppError("❌ 非表示処理に失敗しました。"); }
     })
-    .catch(err => showAppError("通信エラーが発生しました。処理を実行できません。"));
+    .catch(err => showAppError("通信エラーが発生しました。"));
   }
 </script>
 </body>
