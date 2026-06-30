@@ -1,0 +1,104 @@
+// 管理者専用GAS：Code.gs
+
+// 2つのスプレッドシートIDを個別に設定（以前と同じIDを貼り付けてください）
+const EVENT_SS_ID = "ここに【イベントデータ】のスプレッドシートIDを入力";
+const ACTION_SS_ID = "ここに【ユーザーアクション】のスプレッドシートIDを入力";
+
+// 管理者画面で設定したパスコード「1353」
+const ADMIN_PASSWORD = "1353";
+
+function doGet() {
+  return ContentService.createTextOutput("Admin API Working");
+}
+
+/**
+ * 管理者画面（admin.html）からのリクエストだけを専門に処理するAPI
+ */
+function doPost(e) {
+  const params = JSON.parse(e.postData.contents);
+  const action = params.action;
+  
+  // 1. 管理者機能：認証チェック
+  if (action === 'verifyAdmin') {
+    const isCorrect = (params.password === ADMIN_PASSWORD);
+    return ContentService.createTextOutput(JSON.stringify({ success: isCorrect }))
+        .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  // 2. 管理者機能：管理画面専用の全イベントデータ取得（hideも含めて返す）
+  if (action === 'getAdminEvents') {
+    if (params.password !== ADMIN_PASSWORD) return ContentService.createTextOutput(JSON.stringify({ success: false }));
+    return ContentService.createTextOutput(JSON.stringify(getAdminEventsData()))
+        .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  // 3. 管理者機能：新規イベントの直接追加
+  if (action === 'addEvent') {
+    if (params.password !== ADMIN_PASSWORD) return ContentService.createTextOutput(JSON.stringify({ success: false, msg: "認証エラー" }));
+    
+    const ss = SpreadsheetApp.openById(EVENT_SS_ID);
+    const sheet = ss.getSheets()[0];
+    const newEventId = "ev_" + new Date().getTime();
+    
+    sheet.appendRow([
+      newEventId,
+      params.title,
+      params.date,
+      params.time,
+      params.location,
+      params.address,
+      params.organizer,
+      params.link,
+      params.remark,
+      "show" // 初期ステータスは表示
+    ]);
+    
+    return ContentService.createTextOutput(JSON.stringify({ success: true }))
+        .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  // 4. 管理者機能：イベントの非表示（J列をhideに更新）
+  if (action === 'hideEvent') {
+    if (params.password !== ADMIN_PASSWORD) return ContentService.createTextOutput(JSON.stringify({ success: false, msg: "認証エラー" }));
+    
+    const ss = SpreadsheetApp.openById(EVENT_SS_ID);
+    const sheet = ss.getSheets()[0];
+    const rows = sheet.getDataRange().getValues();
+    
+    for (let i = 0; i < rows.length; i++) {
+      if (String(rows[i][0]).trim() === String(params.eventId).trim()) {
+        sheet.getRange(i + 1, 10).setValue("hide"); 
+        break;
+      }
+    }
+    return ContentService.createTextOutput(JSON.stringify({ success: true }))
+        .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+/**
+ * 管理画面専用のデータ取得関数
+ */
+function getAdminEventsData() {
+  const eventSs = SpreadsheetApp.openById(EVENT_SS_ID);
+  const eventSheet = eventSs.getSheets()[0];
+  const eventRows = eventSheet.getDataRange().getValues();
+  
+  const eventDataStartIndex = eventRows.findIndex(row => row[0] === "イベントID" || row[0] === "eventId");
+  const cleanEventRows = eventRows.slice(eventDataStartIndex + 1);
+  
+  const events = cleanEventRows.map(row => {
+    const eId = String(row[0]).trim();
+    if (!eId) return null;
+    
+    return {
+      eventId: eId,
+      title: row[1],
+      date: row[2] instanceof Date ? Utilities.formatDate(row[2], "JST", "yyyy/MM/dd") : row[2],
+      status: row[9] || "show"
+    };
+  }).filter(e => e !== null);
+  
+  events.sort((a, b) => new Date(a.date) - new Date(b.date));
+  return events;
+}
