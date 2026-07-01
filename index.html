@@ -12,7 +12,7 @@
       background-color: #f0f7fa;
       color: #333333;
       margin: 0;
-      padding: 20px;
+      padding: 15px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -20,11 +20,66 @@
 
     h1 {
       color: #2b7a9e;
-      margin-bottom: 30px;
-      font-size: 1.8rem;
+      margin-top: 15px;
+      margin-bottom: 25px;
+      font-size: 1.6rem;
       text-align: center;
     }
 
+    /* 検索・絞り込みエリア */
+    .filter-card {
+      width: 100%;
+      max-width: 600px;
+      background-color: #ffffff;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+      border: 1px solid #e1f0f7;
+      box-sizing: border-box;
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #cce3ee;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      outline: none;
+      box-sizing: border-box;
+    }
+    .search-input:focus {
+      border-color: #72b2cc;
+    }
+
+    .tab-container {
+      display: flex;
+      gap: 8px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 8px;
+      background-color: #f4f9fc;
+      border: 1px solid #d0e6f2;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #5a9cb3;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background-color: #2b7a9e;
+      color: #ffffff;
+      border-color: #2b7a9e;
+    }
+
+    /* カレンダーコンテナ */
     .calendar-container {
       width: 100%;
       max-width: 600px;
@@ -42,9 +97,41 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      position: relative;
     }
 
-    /* 本文コンテンツ（行分け表示） */
+    /* 各種バッジ・ラベル */
+    .badge-container {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+    }
+
+    .status-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 4px;
+      color: white;
+    }
+    .status-badge.today { background-color: #e63946; }
+    .status-badge.rain-ok { background-color: #2a9d8f; }
+    .status-badge.rain-ng { background-color: #f4a261; }
+
+    .discount-badge {
+      background-color: #e9c46a;
+      color: #6d4c00;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 6px;
+      border-radius: 4px;
+    }
+
+    /* 本文コンテンツ */
     .card-body {
       padding: 20px;
       display: flex;
@@ -53,15 +140,25 @@
       font-size: 0.95rem;
     }
 
+    .event-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #1d5670;
+      margin-bottom: 6px;
+      padding-right: 100px; /* バッジとの重複防止 */
+      line-height: 1.4;
+    }
+
     .info-line {
       display: flex;
       line-height: 1.5;
+      align-items: flex-start;
     }
 
     .info-label {
       font-weight: 700;
       color: #5a9cb3;
-      width: 110px;
+      width: 90px;
       flex-shrink: 0;
     }
 
@@ -69,43 +166,58 @@
       color: #444444;
     }
 
-    .event-title {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: #1d5670;
-      margin-bottom: 6px;
+    /* アクションリンクボタン */
+    .action-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 5px;
     }
 
-    .event-link a {
+    .inline-link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.8rem;
       color: #2b7a9e;
       text-decoration: none;
+      background-color: #f0f7fa;
+      padding: 4px 10px;
+      border-radius: 4px;
       font-weight: 500;
+      border: 1px solid #d2e6f1;
     }
-    .event-link a:hover {
-      text-decoration: underline;
+    .inline-link-btn:hover {
+      background-color: #e1f0f7;
     }
 
-    /* フッター：本文との間に区切り線を表示 */
+    /* フッター：本文との間に区切り線 */
     .card-footer {
       border-top: 1px solid #e8f4f9;
-      padding: 10px 20px;
+      padding: 10px 15px;
       background-color: #fafdfebd;
       display: flex;
-      gap: 20px;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-left-btns {
+      display: flex;
+      gap: 12px;
     }
 
     /* ボタン共通：型取り・グレースケール基本スタイル */
     .action-btn {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       background: none;
       border: none;
       cursor: pointer;
-      padding: 6px 12px;
+      padding: 6px 10px;
       border-radius: 20px;
-      font-size: 0.9rem;
-      color: #777777; /* グレースケールテキスト */
+      font-size: 0.88rem;
+      color: #777777;
       transition: background-color 0.2s;
     }
 
@@ -114,28 +226,35 @@
     }
 
     .action-btn svg {
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
       fill: none;
-      stroke: #999999; /* グレースケール型取り */
+      stroke: #999999;
       stroke-width: 2;
       stroke-linecap: round;
       stroke-linejoin: round;
-      transition: fill 0.2s, stroke 0.2s;
     }
 
-    /* コメントボタン（アクティブ時） */
+    /* 各ボタンのアクティブ状態 */
     .comment-btn.active svg {
       stroke: #2b7a9e;
       fill: #e1f0f7;
     }
 
-    /* いいねボタン：押された時の赤色＆凹むアニメーション */
+    .going-btn.active {
+      color: #2a9d8f;
+      font-weight: bold;
+    }
+    .going-btn.active svg {
+      stroke: #2a9d8f;
+      fill: #e6f6f4;
+    }
+
     .like-btn.liked {
       color: #e63946;
       animation: click-dent 0.15s ease-in-out;
+      font-weight: bold;
     }
-    
     .like-btn.liked svg {
       fill: #e63946;
       stroke: #e63946;
@@ -143,32 +262,40 @@
 
     @keyframes click-dent {
       0% { transform: scale(1); }
-      50% { transform: scale(0.85); } /* 凹むアニメーション */
+      50% { transform: scale(0.85); }
       100% { transform: scale(1); }
+    }
+
+    /* LINE共有ボタンの独自カラー */
+    .share-line-btn {
+      color: #06c755;
+      font-weight: 500;
+    }
+    .share-line-btn svg {
+      stroke: #06c755;
     }
 
     /* コメントエリア */
     .comment-section {
       border-top: 1px solid #e8f4f9;
       background-color: #fcfdfe;
-      padding: 15px 20px;
-      display: none; /* 初期状態は非表示 */
+      padding: 15px;
+      display: none;
     }
 
     .comment-input-wrap {
       display: flex;
       gap: 10px;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
     }
 
     .comment-input {
       flex-grow: 1;
-      padding: 10px 12px;
+      padding: 10px;
       border: 1px solid #cce3ee;
       border-radius: 6px;
       font-size: 0.9rem;
       outline: none;
-      box-sizing: border-box;
     }
     .comment-input:focus {
       border-color: #72b2cc;
@@ -178,36 +305,33 @@
       background-color: #5a9cb3;
       color: white;
       border: none;
-      padding: 8px 16px;
+      padding: 8px 14px;
       border-radius: 6px;
       cursor: pointer;
       font-weight: 500;
       white-space: nowrap;
     }
-    .comment-submit-btn:hover {
-      background-color: #2b7a9e;
-    }
 
     .comments-list {
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      max-height: 250px;
+      gap: 8px;
+      max-height: 200px;
       overflow-y: auto;
     }
 
     .comment-item {
-      padding: 10px 12px;
+      padding: 8px 12px;
       background-color: #f3f9fc;
       border-radius: 6px;
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       line-height: 1.4;
     }
 
     .comment-time {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       color: #999999;
-      margin-top: 4px;
+      margin-top: 3px;
       text-align: right;
     }
   </style>
@@ -216,20 +340,28 @@
 
   <h1>🏝️ 奄美イベントカレンダー 🏝️</h1>
 
+  <div class="filter-card">
+    <input type="text" id="searchInput" class="search-input" placeholder="🔍 キーワード、場所、主催者で検索..." oninput="filterEvents()">
+    <div class="tab-container">
+      <div class="tab-btn active" id="tab-all" onclick="switchTab('all')">すべて</div>
+      <div class="tab-btn" id="tab-today" onclick="switchTab('today')">今日</div>
+      <div class="tab-btn" id="tab-weekend" onclick="switchTab('weekend')">今週末</div>
+    </div>
+  </div>
+
   <div class="calendar-container" id="calendarContainer">
     <div style="text-align: center; color: #777; padding: 20px;">最新のイベント情報を読み込んでいます...</div>
   </div>
 
   <script>
-    // 【重要】一般ユーザー用（いいね・コメント受付用）のGASウェブアプリURLを貼り付けてください
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbw1EsZvczo27RV0IngfT5B6fAwNTV-Y4e7u1qxLd60XEVsRtFACZxVK_nAPI87RW2XwsA/exec";
+    // 【重要】ご自身の「一般ユーザー用GAS」のウェブアプリURLをここに貼り付けてください
+    const GAS_URL = "ここにあなたの一般ユーザー用GASウェブアプリURLを貼り付け";
 
-    // アプリ起動時にイベント一覧を自動ロード
+    let allEvents = []; // 取得した全データを保持する配列
+    let currentTab = 'all';
+
     document.addEventListener('DOMContentLoaded', loadEvents);
 
-    /**
-     * GASからイベント一覧データを非同期で取得
-     */
     function loadEvents() {
       fetch(GAS_URL, {
         method: 'POST',
@@ -237,65 +369,99 @@
       })
       .then(res => res.json())
       .then(events => {
-        renderEvents(events);
+        allEvents = events;
+        renderEvents(allEvents);
       })
       .catch(err => {
         console.error("データ取得エラー:", err);
         document.getElementById('calendarContainer').innerHTML = 
-          '<div style="text-align:center;color:#e63946;padding:20px;">データの読み込みに失敗しました。時間をおいて再度お試しください。</div>';
+          '<div style="text-align:center;color:#e63946;padding:20px;">データの読み込みに失敗しました。</div>';
       });
     }
 
     /**
-     * 取得したイベントデータをカード型UIとして画面に描画
+     * イベントカードの動的レンダリング
      */
     function renderEvents(events) {
       const container = document.getElementById('calendarContainer');
       container.innerHTML = '';
 
       if (!events || events.length === 0) {
-        container.innerHTML = '<div style="text-align:center;color:#777;padding:20px;">現在予定されているイベントはありません。</div>';
+        container.innerHTML = '<div style="text-align:center;color:#777;padding:20px;">該当するイベントはありません。</div>';
         return;
       }
 
+      const todayStr = getTodayString();
+
       events.forEach(event => {
+        const isToday = (event.date === todayStr);
+        
+        // 外部連携用のURL生成
+        const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.address || event.location)}`;
+        const gCalUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${event.date.replace(/\//g, '')}T${(event.time || '00:00').replace(':', '')}00Z&details=${encodeURIComponent(event.remark || '')}&location=${encodeURIComponent(event.location)}`;
+        const lineShareUrl = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent('【奄美イベント情報】\n' + event.title + '\n日時: ' + event.date + ' ' + event.time + '\n場所: ' + event.location + '\n友達を誘って一緒に行こう！')}`;
+
         const card = document.createElement('div');
         card.className = 'event-card';
         card.innerHTML = `
+          <div class="badge-container">
+            ${isToday ? '<span class="status-badge today">TODAY</span>' : ''}
+            ${event.rainStatus ? `<span class="status-badge ${event.rainStatus === '雨天決行' ? 'rain-ok' : 'rain-ng'}">${event.rainStatus}</span>` : ''}
+            ${event.discountInfo ? `<span class="discount-badge">${event.discountInfo}</span>` : ''}
+          </div>
+
           <div class="card-body">
             <div class="event-title">${event.title}</div>
             <div class="info-line"><span class="info-label">開催日：</span><span class="info-value">${event.date}</span></div>
-            <div class="info-line"><span class="info-label">開始時刻：</span><span class="info-value">${event.time}</span></div>
+            <div class="info-line"><span class="info-label">開始時刻：</span><span class="info-value">${event.time || '未定'}</span></div>
             <div class="info-line"><span class="info-label">開催場所：</span><span class="info-value">${event.location}</span></div>
-            <div class="info-line"><span class="info-label">住所：</span><span class="info-value">${event.address}</span></div>
-            <div class="info-line"><span class="info-label">運営主体：</span><span class="info-value">${event.organizer}</span></div>
-            <div class="info-line event-link"><span class="info-label">詳細リンク：</span><span class="info-value"><a href="${event.link}" target="_blank">詳細を見る</a></span></div>
-            ${event.remark ? `<div class="info-line" style="margin-top: 4px; font-size: 0.9rem; color: #666;"><span class="info-label">備考：</span><span class="info-value">${event.remark}</span></div>` : ''}
+            <div class="info-line"><span class="info-label">住所：</span><span class="info-value">${event.address || '---'}</span></div>
+            <div class="info-line"><span class="info-label">運営主体：</span><span class="info-value">${event.organizer || '---'}</span></div>
+            ${event.remark ? `<div class="info-line" style="color: #666;"><span class="info-label">備考：</span><span class="info-value">${event.remark}</span></div>` : ''}
+            
+            <div class="action-links">
+              <a href="${mapUrl}" target="_blank" class="inline-link-btn">🗺️ ルート案内</a>
+              <a href="${gCalUrl}" target="_blank" class="inline-link-btn">📅 カレンダー登録</a>
+              ${event.link ? `<a href="${event.link}" target="_blank" class="inline-link-btn">🔗 詳細リンク</a>` : ''}
+            </div>
           </div>
           
           <div class="card-footer">
-            <button class="action-btn comment-btn" id="comment-btn-${event.eventId}" onclick="toggleCommentSection('${event.eventId}')">
-              <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-              <span id="comment-count-${event.eventId}">${event.comments.length}</span>
-            </button>
-            <button class="action-btn like-btn" id="like-btn-${event.eventId}" onclick="handleLike('${event.eventId}')">
-              <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-              <span id="like-count-${event.eventId}">${event.likes}</span>
-            </button>
+            <div class="footer-left-btns">
+              <button class="action-btn comment-btn" id="comment-btn-${event.eventId}" onclick="toggleCommentSection('${event.eventId}')">
+                <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <span id="comment-count-${event.eventId}">${event.comments ? event.comments.length : 0}</span>
+              </button>
+              
+              <button class="action-btn like-btn" id="like-btn-${event.eventId}" onclick="handleLike('${event.eventId}')">
+                <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                <span id="like-count-${event.eventId}">${event.likes || 0}</span>
+              </button>
+
+              <button class="action-btn going-btn" id="going-btn-${event.eventId}" onclick="handleGoing('${event.eventId}')">
+                <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <span id="going-count-${event.eventId}">${event.goings || 0}</span>
+              </button>
+            </div>
+
+            <a href="${lineShareUrl}" target="_blank" class="action-btn share-line-btn">
+              <svg viewBox="0 0 24 24"><path d="M18 8h-1V7c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v1H8c-1.1 0-2 .9-2 2v9c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-9c0-1.1-.9-2-2-2zM11 7h4v1h-4V7zm7 12H8v-9h10v9z"/></svg>
+              <span>誘う</span>
+            </a>
           </div>
           
           <div class="comment-section" id="comment-section-${event.eventId}">
             <div class="comment-input-wrap">
-              <input type="text" class="comment-input" id="input-${event.eventId}" placeholder="コメントを入力（新しい順に上に表示されます）...">
+              <input type="text" class="comment-input" id="input-${event.eventId}" placeholder="コメントを入力（新しい順に上へ表示）...">
               <button class="comment-submit-btn" onclick="submitComment('${event.eventId}')">送信</button>
             </div>
             <div class="comments-list" id="comments-list-${event.eventId}">
-              ${event.comments.map(c => `
+              ${event.comments ? event.comments.map(c => `
                 <div class="comment-item">
                   <div>${c.content}</div>
                   <div class="comment-time">${c.timestamp}</div>
                 </div>
-              `).join('')}
+              `).join('') : ''}
             </div>
           </div>
         `;
@@ -304,15 +470,49 @@
     }
 
     /**
-     * いいねボタン押下時のリアルタイム処理＆凹むアニメーション
+     * 【新機能】タブの切り替えロジック
      */
+    function switchTab(tabType) {
+      currentTab = tabType;
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(`tab-${tabType}`).classList.add('active');
+      filterEvents();
+    }
+
+    /**
+     * 【新機能】検索ワードと選択タブによる複合リアルタイムフィルタリング
+     */
+    function filterEvents() {
+      const keyword = document.getElementById('searchInput').value.toLowerCase().trim();
+      const todayStr = getTodayString();
+      
+      let filtered = allEvents;
+
+      // 1. タブによる日付絞り込み
+      if (currentTab === 'today') {
+        filtered = filtered.filter(ev => ev.date === todayStr);
+      } else if (currentTab === 'weekend') {
+        filtered = filtered.filter(ev => isThisWeekend(ev.date));
+      }
+
+      // 2. 検索キーワードによる絞り込み
+      if (keyword) {
+        filtered = filtered.filter(ev => 
+          ev.title.toLowerCase().includes(keyword) || 
+          (ev.location && ev.location.toLowerCase().includes(keyword)) ||
+          (ev.organizer && ev.organizer.toLowerCase().includes(keyword)) ||
+          (ev.address && ev.address.toLowerCase().includes(keyword))
+        );
+      }
+
+      renderEvents(filtered);
+    }
+
     function handleLike(eventId) {
       const btn = document.getElementById(`like-btn-${eventId}`);
       const countSpan = document.getElementById(`like-count-${eventId}`);
-      
-      // アニメーションを再トリガーするためのリフレッシュ
       btn.classList.remove('liked');
-      void btn.offsetWidth; 
+      void btn.offsetWidth;
       btn.classList.add('liked');
 
       fetch(GAS_URL, {
@@ -320,21 +520,29 @@
         body: JSON.stringify({ action: 'addLike', eventId: eventId })
       })
       .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          countSpan.innerText = data.newLikes; // リアルタイム変更
-        }
-      })
-      .catch(err => console.error("いいね送信エラー:", err));
+      .then(data => { if (data.success) countSpan.innerText = data.newLikes; });
     }
 
     /**
-     * コメントセクションの開閉（トグル表示）
+     * 【新機能】行くよ！ボタンのカウンター同期処理
      */
+    function handleGoing(eventId) {
+      const btn = document.getElementById(`going-btn-${eventId}`);
+      const countSpan = document.getElementById(`going-count-${eventId}`);
+      
+      btn.classList.toggle('active');
+
+      fetch(GAS_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'addGoing', eventId: eventId })
+      })
+      .then(res => res.json())
+      .then(data => { if (data.success) countSpan.innerText = data.newGoings; });
+    }
+
     function toggleCommentSection(eventId) {
       const section = document.getElementById(`comment-section-${eventId}`);
       const btn = document.getElementById(`comment-btn-${eventId}`);
-      
       if (section.style.display === 'block') {
         section.style.display = 'none';
         btn.classList.remove('active');
@@ -345,9 +553,6 @@
       }
     }
 
-    /**
-     * コメントのリアルタイム送信（新しい順に上に追加）
-     */
     function submitComment(eventId) {
       const input = document.getElementById(`input-${eventId}`);
       const commentText = input.value.trim();
@@ -360,24 +565,34 @@
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          input.value = ''; // 入力欄をクリア
-          
-          // 新しいコメントをリストの一番先頭（上）にリアルタイム挿入
+          input.value = '';
           const list = document.getElementById(`comments-list-${eventId}`);
           const newItem = document.createElement('div');
           newItem.className = 'comment-item';
-          newItem.innerHTML = `
-            <div>${data.comment.content}</div>
-            <div class="comment-time">${data.comment.timestamp}</div>
-          `;
+          newItem.innerHTML = `<div>${data.comment.content}</div><div class="comment-time">${data.comment.timestamp}</div>`;
           list.insertBefore(newItem, list.firstChild);
 
-          // コメントカウンターの数値をリアルタイム加算
           const countSpan = document.getElementById(`comment-count-${eventId}`);
           countSpan.innerText = parseInt(countSpan.innerText) + 1;
         }
-      })
-      .catch(err => console.error("コメント送信エラー:", err));
+      });
+    }
+
+    /* --- 便利系日付ユーティリティ関数関数 --- */
+
+    function getTodayString() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      const d = String(now.getDate()).padStart(2, '0');
+      return `${y}/${m}/${d}`;
+    }
+
+    function isThisWeekend(dateStr) {
+      // dateStr形式: "yyyy/mm/dd"
+      const date = new Date(dateStr);
+      const day = date.getDay(); // 0: 日曜日, 6: 土曜日
+      return (day === 0 || day === 6);
     }
   </script>
 </body>
