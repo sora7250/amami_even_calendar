@@ -25,13 +25,13 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
-    /* 三本線（ハンバーガー）ボタン */
+    /* 三本線メニューボタン */
     .menu-trigger {
       background: none;
       border: none;
       cursor: pointer;
       padding: 5px;
-      display: none; /* 初期（認証前）は非表示 */
+      display: none; /* 初期は非表示 */
       align-items: center;
     }
     .menu-trigger svg {
@@ -51,7 +51,7 @@
     .side-menu {
       position: fixed;
       top: 0;
-      left: -260px; /* 初期状態は隠す */
+      left: -260px;
       width: 240px;
       height: 100%;
       background-color: #1d5670;
@@ -62,7 +62,7 @@
       box-sizing: border-box;
     }
     .side-menu.open {
-      left: 0; /* 開く */
+      left: 0;
     }
     .side-menu h3 {
       color: #b0cddb;
@@ -86,7 +86,6 @@
       background-color: #2b7a9e;
     }
 
-    /* メニュー背景の影 */
     .menu-overlay {
       position: fixed;
       top: 0;
@@ -120,7 +119,7 @@
       font-size: 0.9rem;
       color: #555;
     }
-    input[type="text"], input[type="date"], input[type="time"], input[type="password"] {
+    input[type="text"], input[type="date"], input[type="time"], input[type="password"], select {
       width: 100%;
       padding: 12px;
       border: 1px solid #ccc;
@@ -129,37 +128,48 @@
       font-size: 1rem;
       outline: none;
     }
-    input[type="password"]:focus, input[type="text"]:focus, input[type="date"]:focus {
+    input:focus, select:focus {
       border-color: #2b7a9e;
     }
+    
+    /* ボタンデザイン */
     button {
       width: 100%;
       padding: 12px;
-      background-color: #2b7a9e;
       color: white;
       border: none;
       border-radius: 6px;
       font-size: 1rem;
       font-weight: bold;
       cursor: pointer;
+      transition: background-color 0.2s;
     }
-    
-    /* アプリ統一メッセージ通知エリア */
+    .primary-btn { background-color: #2a9d8f; }
+    .primary-btn:hover { background-color: #20786e; }
+    .secondary-btn { background-color: #2b7a9e; }
+    .secondary-btn:hover { background-color: #1d5670; }
+    .danger-btn { background-color: #e63946; padding: 6px 12px; width: auto; font-size: 0.85rem; }
+    .danger-btn:hover { background-color: #c92a3a; }
+    .edit-btn { background-color: #f4a261; padding: 6px 12px; width: auto; font-size: 0.85rem; margin-right: 5px; }
+    .edit-btn:hover { background-color: #e76f51; }
+
+    /* メッセージ通知エリア */
     .error-message { color: #e63946; background-color: #fff5f5; border: 1px solid #ffcccc; padding: 10px; border-radius: 6px; text-align: center; margin-bottom: 15px; display: none; font-size: 0.9rem; }
     .success-message { color: #2a9d8f; background-color: #f0fbf9; border: 1px solid #cceee9; padding: 10px; border-radius: 6px; text-align: center; margin-bottom: 15px; display: none; font-size: 0.9rem; }
 
-    /* 【演出要件】パスコード誤入力時の細かく短い横揺れアニメーション */
+    /* 【演出要件】細かく短く横揺れするアニメーション */
     .shake { 
       animation: shake-animation 0.4s ease-in-out; 
-      border: 2px solid #e63946 !important; 
+    }
+    .shake-border {
+      border: 2px solid #e63946 !important;
     }
     @keyframes shake-animation {
       0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-8px); }
-      40%, 80% { transform: translateX(8px); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
     }
 
-    /* タイマーバー */
     .timer-bar {
       background-color: #e2ebee;
       color: #2b7a9e;
@@ -171,19 +181,17 @@
       justify-content: space-between;
       margin-bottom: 15px;
     }
-    .danger-btn { background-color: #e63946; padding: 6px 12px; width: auto; font-size: 0.85rem; color: white; border: none; border-radius: 4px; cursor: pointer; }
-    .danger-btn:hover { background-color: #c92a3a; }
-    .disabled-status { color: #999; font-style: italic; font-size: 0.85rem; }
     
-    .event-list-item {
+    .list-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 12px 0;
       border-bottom: 1px solid #eee;
     }
+    .item-info { flex-grow: 1; padding-right: 10px; }
+    .disabled-status { color: #999; font-style: italic; font-size: 0.85rem; }
     
-    /* レイヤー表示切り替え用 */
     .admin-layer { display: none; }
     #authCard { display: block; }
     #adminContent { display: none; }
@@ -202,6 +210,7 @@
     <h3>MENU</h3>
     <div class="menu-item active" id="menuItemAdd" onclick="switchLayer('add')">📅 新規イベントの登録</div>
     <div class="menu-item" id="menuItemManage" onclick="switchLayer('manage')">🗑️ 掲載中イベントの管理</div>
+    <div class="menu-item" id="menuItemComment" onclick="switchLayer('comment')">💬 ユーザーコメント管理</div>
     <div class="menu-item" style="margin-top: 30px; background-color: #c92a3a; text-align: center;" onclick="triggerAutoLock()">🔒 画面をロックする</div>
   </div>
   <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
@@ -216,27 +225,44 @@
       <div class="form-group">
         <input type="password" id="passInput" placeholder="4桁のパスコードを入力" maxlength="4" pattern="\d*">
       </div>
-      <button onclick="verifyAdminCode()">ロック解除</button>
+      <button onclick="verifyAdminCode()" class="secondary-btn">ロック解除</button>
     </div>
 
     <div id="adminContent">
       <div class="timer-bar">
-        <span>🔐 セキュリティ維持モード作動中</span>
+        <span>🔐 セキュリティ維持モード</span>
         <span id="countdownDisplay">自動ロックまで: 15:00</span>
       </div>
       
       <div id="layerAdd" class="admin-layer" style="display: block;">
-        <div class="card">
-          <h2>📅 新規イベントの追加サイト登録</h2>
-          <div class="form-group"><label>イベント名</label><input type="text" id="addTitle"></div>
-          <div class="form-group"><label>開催日</label><input type="date" id="addDate"></div>
+        <div class="card" id="formCard">
+          <h2 id="formTargetTitle">📅 新規イベントの追加サイト登録</h2>
+          <input type="hidden" id="editEventId" value="">
+          
+          <div class="form-group"><label>イベント名 *</label><input type="text" id="addTitle"></div>
+          <div class="form-group"><label>開催日 *</label><input type="date" id="addDate"></div>
           <div class="form-group"><label>開始時刻</label><input type="text" id="addTime" placeholder="例: 13:00"></div>
           <div class="form-group"><label>開催場所</label><input type="text" id="addLocation"></div>
           <div class="form-group"><label>住所</label><input type="text" id="addAddress"></div>
           <div class="form-group"><label>運営主体</label><input type="text" id="addOrganizer"></div>
           <div class="form-group"><label>詳細リンク</label><input type="text" id="addLink" placeholder="https://..."></div>
+          
+          <div class="form-group">
+            <label>雨天時対応</label>
+            <select id="addRainStatus">
+              <option value="">-- 選択してください --</option>
+              <option value="雨天決行">雨天決行</option>
+              <option value="雨天中止">雨天中止</option>
+              <option value="雨天順延">雨天順延</option>
+            </select>
+          </div>
+          
+          <div class="form-group"><label>島民割引特典情報</label><input type="text" id="addDiscountInfo" placeholder="例: 島民割引あり、未就学児無料など"></div>
           <div class="form-group"><label>備考</label><input type="text" id="addRemark"></div>
-          <button onclick="submitNewEvent()" style="background-color: #2a9d8f;">✨ この内容でイベントを登録</button>
+          <div class="form-group"><label>編集スタッフ名 *</label><input type="text" id="staffName" placeholder="Canvas Core 担当者名"></div>
+          
+          <button id="submitFormBtn" onclick="submitEventForm()" class="primary-btn">✨ この内容で登録する</button>
+          <button id="cancelEditBtn" onclick="clearEventForm()" class="danger-btn" style="width:100%; margin-top:10px; display:none;">✍️ 編集をキャンセルして新規登録に戻る</button>
         </div>
       </div>
 
@@ -246,22 +272,27 @@
           <div id="managementEventList">読み込み中...</div>
         </div>
       </div>
+
+      <div id="layerComment" class="admin-layer">
+        <div class="card">
+          <h2>💬 投稿ユーザーコメントの管理</h2>
+          <div id="managementCommentList">読み込み中...</div>
+        </div>
+      </div>
     </div>
 
   </div>
 
 <script>
-  // 【重要】管理者専用に新規作成した「admin用GASウェブアプリのURL」を貼り付けてください
-  const GAS_URL = "https://script.google.com/macros/s/AKfycbwmZ6pmfg5otJzsStil-yN67UmL4In3HwYiOqQx4suEl9aaP7HCdxJ92z0U7Lf8o8-Z/exec";
-  
-  // 要件定義の固定パスコード
+  // 【重要】管理者専用に新規作成した「admin用GASウェブアプリのURL」をここに貼り付けてください
+  const GAS_URL = "https://script.google.com/macros/s/AKfycbz6zqC8J-NmvayDUpe72BGLlLSaxwobHiXKhPJkVQXGgAkDmBqawakOnW21cq2cGGtl/exec";
   const CORRECT_PASSCODE = "1353";
   
   let lockTimer = null;
   let countdownTimer = null;
-  let timeLeft = 15 * 60; // 15分（秒換算）
+  let timeLeft = 15 * 60;
+  let cachedEvents = []; // 編集用に全イベントのデータをクライアント側に保持
 
-  // 起動時の初期設定
   window.onload = function() {
     document.getElementById('passInput').focus();
     document.getElementById('passInput').addEventListener('keypress', function(e) {
@@ -269,9 +300,6 @@
     });
   };
 
-  /**
-   * アプリ標準に統一されたエラーメッセージの表示
-   */
   function showAppError(message) {
     const errorDiv = document.getElementById('appError');
     errorDiv.innerText = message;
@@ -280,9 +308,6 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  /**
-   * アプリ標準に統一された成功メッセージの表示
-   */
   function showAppSuccess(message) {
     const successDiv = document.getElementById('appSuccess');
     successDiv.innerText = message;
@@ -292,9 +317,6 @@
     setTimeout(() => { successDiv.style.display = 'none'; }, 5000);
   }
 
-  /**
-   * 三本線メニューの開閉
-   */
   function toggleMenu() {
     const menu = document.getElementById('sideMenu');
     const overlay = document.getElementById('menuOverlay');
@@ -307,9 +329,6 @@
     }
   }
 
-  /**
-   * 【階層分け】表示する画面（レイヤー）の切り替え
-   */
   function switchLayer(layerType) {
     document.querySelectorAll('.admin-layer').forEach(layer => layer.style.display = 'none');
     document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
@@ -317,20 +336,26 @@
     if (layerType === 'add') {
       document.getElementById('layerAdd').style.display = 'block';
       document.getElementById('menuItemAdd').classList.add('active');
-      document.getElementById('headerTitle').innerText = "管理画面 | 新規イベント登録";
+      if (!document.getElementById('editEventId').value) {
+        document.getElementById('headerTitle').innerText = "管理画面 | 新規イベント登録";
+      } else {
+        document.getElementById('headerTitle').innerText = "管理画面 | イベント内容編集";
+      }
     } else if (layerType === 'manage') {
       document.getElementById('layerManage').style.display = 'block';
       document.getElementById('menuItemManage').classList.add('active');
       document.getElementById('headerTitle').innerText = "管理画面 | 掲載中イベント管理";
-      loadManagementEvents(); // 切り替え時に最新リストを読込
+      loadManagementEvents();
+    } else if (layerType === 'comment') {
+      document.getElementById('layerComment').style.display = 'block';
+      document.getElementById('menuItemComment').classList.add('active');
+      document.getElementById('headerTitle').innerText = "管理画面 | ユーザーコメント管理";
+      loadManagementComments();
     }
     toggleMenu();
-    startLockTimers(); // 操作があったため15分カウントを最初からやり直し
+    startLockTimers();
   }
 
-  /**
-   * パスコード検証と横揺れ演出
-   */
   function verifyAdminCode() {
     const inputElement = document.getElementById('passInput');
     const authCard = document.getElementById('authCard');
@@ -340,37 +365,31 @@
 
     if (code === CORRECT_PASSCODE) {
       inputElement.value = '';
-      authCard.classList.remove('shake');
+      authCard.classList.remove('shake', 'shake-border');
       authCard.style.display = 'none';
       document.getElementById('adminContent').style.display = 'block';
       
-      // 認証成功で三本線メニューを活性化
       document.getElementById('menuTrigger').style.display = 'flex';
       document.getElementById('headerTitle').innerText = "管理画面 | 新規イベント登録";
       
-      // 15分タイマーループ開始
       startLockTimers();
     } else {
-      // パスコードミス時に細かく短く揺れるアニメーションを発動
-      authCard.classList.remove('shake');
-      void authCard.offsetWidth; // リフレッシュトリック
-      authCard.classList.add('shake');
+      // パスコードエラー時の細かく短い横揺れアニメーション
+      authCard.classList.remove('shake', 'shake-border');
+      void authCard.offsetWidth;
+      authCard.classList.add('shake', 'shake-border');
       
-      // アプリ標準に統一されたエラー通知
       showAppError("❌ パスコードが正しくありません。もう一度入力してください。");
       inputElement.value = '';
       inputElement.focus();
     }
   }
 
-  /**
-   * 15分自動ロックタイマーのループ制御
-   */
   function startLockTimers() {
     if (lockTimer) clearTimeout(lockTimer);
     if (countdownTimer) clearInterval(countdownTimer);
     
-    timeLeft = 15 * 60; // 15分にリセットしてカウント
+    timeLeft = 15 * 60;
     updateTimerDisplay();
 
     countdownTimer = setInterval(() => {
@@ -388,9 +407,6 @@
     document.getElementById('countdownDisplay').innerText = `自動ロックまで: ${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
   }
 
-  /**
-   * 自動ロック発動処理
-   */
   function triggerAutoLock() {
     if (lockTimer) clearTimeout(lockTimer);
     if (countdownTimer) clearInterval(countdownTimer);
@@ -403,17 +419,18 @@
     document.getElementById('sideMenu').classList.remove('open');
     document.getElementById('menuOverlay').style.display = 'none';
     
+    clearEventForm();
     document.getElementById('passInput').value = '';
-    showAppError("🔒 安全のため、15分間操作がなかったか、手動ロックが行われたため画面をロックしました。再度パスコードを入力してください。");
+    showAppError("🔒 安全維持のため、15分間操作がなかったか、手動ロックが押されたため自動ロックしました。再度1353の入力を求めます。");
     document.getElementById('passInput').focus();
   }
 
   /**
-   * 【修正版】独立したadmin専用APIから掲載中・非表示すべてのデータを取得
+   * 掲載中イベントの一覧取得（編集データキャッシュ機能付き）
    */
   function loadManagementEvents() {
     const listDiv = document.getElementById('managementEventList');
-    listDiv.innerHTML = '最新のデータを安全に取得中...';
+    listDiv.innerHTML = '最新データを安全に同期中...';
 
     fetch(GAS_URL, {
       method: 'POST',
@@ -422,67 +439,186 @@
     .then(res => res.json())
     .then(events => {
       listDiv.innerHTML = '';
-      if(!events || events.length === 0) { listDiv.innerHTML = '現在登録されているイベントはありません。'; return; }
+      if(!events || events.length === 0) { listDiv.innerHTML = '登録されているイベントはありません。'; return; }
+      
+      cachedEvents = events; // グローバルキャッシュに保存
       
       events.forEach(ev => {
         const item = document.createElement('div');
-        item.className = 'event-list-item';
+        item.className = 'list-item';
         
         if (ev.status === 'hide') {
           item.innerHTML = `
-            <div style="color: #999; text-decoration: line-through;"><strong>${ev.date}</strong> - ${ev.title}</div>
+            <div class="item-info" style="color: #999; text-decoration: line-through;"><strong>${ev.date}</strong> - ${ev.title}</div>
             <span class="disabled-status">非表示設定済</span>
           `;
         } else {
           item.innerHTML = `
-            <div><strong>${ev.date}</strong> - ${ev.title}</div>
-            <button class="danger-btn" onclick="hideEvent('${ev.eventId}')">非表示にする</button>
+            <div class="item-info"><strong>${ev.date}</strong> - ${ev.title}</div>
+            <div>
+              <button class="edit-btn" onclick="startEditEvent('${ev.eventId}')">編集</button>
+              <button class="danger-btn" onclick="hideEvent('${ev.eventId}')">非表示</button>
+            </div>
           `;
         }
         listDiv.appendChild(item);
       });
     })
-    .catch(err => showAppError("管理データの取得に失敗しました。管理者専用GASの最新デプロイとURLを確認してください。"));
+    .catch(err => showAppError("管理データの同期に失敗しました。GASのデプロイ環境を確認してください。"));
   }
 
   /**
-   * 新規イベントの追加投稿
+   * 【新機能要件】投稿ユーザーコメントの一覧取得とモデレーション管理
    */
-  function submitNewEvent() {
-    const title = document.getElementById('addTitle').value;
-    const date = document.getElementById('addDate').value;
-    if(!title || !date) { showAppError("⚠️ イベント名と開催日は必須項目です。"); return; }
+  function loadManagementComments() {
+    const listDiv = document.getElementById('managementCommentList');
+    listDiv.innerHTML = 'ユーザーコメントを読み込み中...';
 
+    fetch(GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'getAdminComments', password: CORRECT_PASSCODE })
+    })
+    .then(res => res.json())
+    .then(comments => {
+      listDiv.innerHTML = '';
+      if(!comments || comments.length === 0) { listDiv.innerHTML = '投稿されたコメントはありません。'; return; }
+      
+      comments.forEach(c => {
+        const item = document.createElement('div');
+        item.className = 'list-item';
+        
+        if (c.status === 'hide') {
+          item.innerHTML = `
+            <div class="item-info" style="color: #999; text-decoration: line-through;">
+              <small style="color:#aaa;">[イベントID: ${c.eventId}] ${c.timestamp}</small><br>${c.content}
+            </div>
+            <span class="disabled-status">削除済</span>
+          `;
+        } else {
+          item.innerHTML = `
+            <div class="item-info">
+              <small style="color:#2b7a9e; font-weight:bold;">[イベント: ${c.eventTitle}]</small> <small style="color:#888;">${c.timestamp}</small><br>
+              <strong>${c.content}</strong>
+            </div>
+            <button class="danger-btn" onclick="hideComment('${c.commentId}')">不適切削除</button>
+          `;
+        }
+        listDiv.appendChild(item);
+      });
+    })
+    .catch(err => showAppError("コメントデータの取得に失敗しました。"));
+  }
+
+  /**
+   * 【新機能要件】フォーム入力情報の送信（新規登録 or 即時上書き編集の自動分岐）
+   */
+  function submitEventForm() {
+    const title = document.getElementById('addTitle').value.trim();
+    const date = document.getElementById('addDate').value;
+    const staff = document.getElementById('staffName').value.trim();
+    const formCard = document.getElementById('formCard');
+    const editId = document.getElementById('editEventId').value;
+
+    // 【要件】必須項目が空の際、ボタン・カード全体が赤く横揺れして警告するバリデーション
+    if (!title || !date || !staff) {
+      formCard.classList.remove('shake', 'shake-border');
+      void formCard.offsetWidth;
+      formCard.classList.add('shake', 'shake-border');
+      showAppError("⚠️ イベント名、開催日、編集スタッフ名は必須項目です。正しく入力してください。");
+      return;
+    }
+    formCard.classList.remove('shake', 'shake-border');
+
+    // 新規登録(addEvent)か上書き編集(editEvent)かをIDの有無で自動判定
+    const isEdit = (editId !== "");
     const payload = {
-      action: 'addEvent',
+      action: isEdit ? 'editEvent' : 'addEvent',
       password: CORRECT_PASSCODE,
+      eventId: editId,
       title: title,
       date: date.replace(/-/g, '/'),
-      time: document.getElementById('addTime').value,
-      location: document.getElementById('addLocation').value,
-      address: document.getElementById('addAddress').value,
-      organizer: document.getElementById('addOrganizer').value,
-      link: document.getElementById('addLink').value,
-      remark: document.getElementById('addRemark').value
+      time: document.getElementById('addTime').value.trim(),
+      location: document.getElementById('addLocation').value.trim(),
+      address: document.getElementById('addAddress').value.trim(),
+      organizer: document.getElementById('addOrganizer').value.trim(),
+      link: document.getElementById('addLink').value.trim(),
+      rainStatus: document.getElementById('addRainStatus').value,
+      discountInfo: document.getElementById('addDiscountInfo').value.trim(),
+      remark: document.getElementById('addRemark').value.trim(),
+      staffName: staff
     };
 
     fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) })
     .then(res => res.json())
     .then(data => {
-      if(data.success) {
-        showAppSuccess("🎉 イベントの追加サイト登録がスプレッドシートへ正常に完了しました！");
-        ['addTitle','addDate','addTime','addLocation','addAddress','addOrganizer','addLink','addRemark'].forEach(id => document.getElementById(id).value = '');
-        startLockTimers(); // 操作があったためタイマーリスタート
-      } else { showAppError("❌ 登録エラーが発生しました。"); }
+      if (data.success) {
+        showAppSuccess(isEdit ? "✏️ イベント内容の上書き修正が完了しました！" : "🎉 新しいイベントの追加サイト登録が完了しました！");
+        clearEventForm();
+        startLockTimers();
+        if (isEdit) switchLayer('manage'); // 編集時は管理リストに戻す
+      } else { 
+        showAppError("❌ 処理中にエラーが発生しました。"); 
+      }
     })
-    .catch(err => showAppError("通信エラーが発生しました。イベントを登録できません。"));
+    .catch(err => showAppError("通信エラーが発生しました。接続を確認してください。"));
   }
 
   /**
-   * 指定イベントの非表示化
+   * 【新機能要件】編集モードの起動（キャッシュからフォームへデータを自動逆流マッピング）
    */
+  function startEditEvent(eventId) {
+    const ev = cachedEvents.find(e => e.eventId === eventId);
+    if (!ev) return;
+
+    // フォームの各部品へ現在の値を流し込む
+    document.getElementById('editEventId').value = ev.eventId;
+    document.getElementById('addTitle').value = ev.title;
+    
+    // 日付フォーマット変換 (yyyy/MM/dd -> yyyy-MM-dd)
+    if(ev.date) document.getElementById('addDate').value = ev.date.replace(/\//g, '-');
+    
+    document.getElementById('addTime').value = ev.time || '';
+    document.getElementById('addLocation').value = ev.location || '';
+    document.getElementById('addAddress').value = ev.address || '';
+    document.getElementById('addOrganizer').value = ev.organizer || '';
+    document.getElementById('addLink').value = ev.link || '';
+    document.getElementById('addRainStatus').value = ev.rainStatus || '';
+    document.getElementById('addDiscountInfo').value = ev.discountInfo || '';
+    document.getElementById('addRemark').value = ev.remark || '';
+
+    // モード切り替えに伴うUI表現の変更
+    document.getElementById('formTargetTitle').innerText = "✏️ 掲載イベント内容の即時編集";
+    document.getElementById('submitFormBtn').innerText = "💾 この内容で上書き修正を保存";
+    document.getElementById('submitFormBtn').style.backgroundColor = "#f4a261";
+    document.getElementById('cancelEditBtn').style.display = "block";
+
+    // 登録フォームのレイヤーに強制切り替え
+    document.querySelectorAll('.admin-layer').forEach(layer => layer.style.display = 'none');
+    document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
+    document.getElementById('layerAdd').style.display = 'block';
+    document.getElementById('menuItemAdd').classList.add('active');
+    document.getElementById('headerTitle').innerText = "管理画面 | イベント内容編集";
+    
+    startLockTimers();
+  }
+
+  /**
+   * フォームの入力内容を一括初期化して新規登録モードに戻す関数
+   */
+  function clearEventForm() {
+    document.getElementById('editEventId').value = "";
+    ['addTitle','addDate','addTime','addLocation','addAddress','addOrganizer','addLink','addDiscountInfo','addRemark'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('addRainStatus').value = "";
+    
+    document.getElementById('formTargetTitle').innerText = "📅 新規イベントの追加サイト登録";
+    document.getElementById('submitFormBtn').innerText = "✨ この内容で登録する";
+    document.getElementById('submitFormBtn').style.backgroundColor = "#2a9d8f";
+    document.getElementById('cancelEditBtn').style.display = "none";
+    document.getElementById('formCard').classList.remove('shake', 'shake-border');
+  }
+
   function hideEvent(eventId) {
-    if(!confirm("このイベントを一般サイト上から非表示にしますか？")) return;
+    if(!confirm("このイベントを一般サイト上から完全に非表示にしますか？")) return;
     
     fetch(GAS_URL, {
       method: 'POST',
@@ -491,12 +627,31 @@
     .then(res => res.json())
     .then(data => {
       if(data.success) {
-        showAppSuccess("🗑️ 指定されたイベントを非表示に設定しました。");
-        loadManagementEvents(); // リストの再描画
-        startLockTimers(); // 操作があったためタイマーリスタート
+        showAppSuccess("🗑️ イベントを非表示に設定しました。");
+        loadManagementEvents();
+        startLockTimers();
       } else { showAppError("❌ 非表示処理に失敗しました。"); }
+    });
+  }
+
+  /**
+   * 【新機能要件】不適切ユーザーコメントの非表示モデレーション実行
+   */
+  function hideComment(commentId) {
+    if(!confirm("このユーザーコメントを不適切な書き込みとして削除（非表示）しますか？")) return;
+    
+    fetch(GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'hideComment', password: CORRECT_PASSCODE, commentId: commentId })
     })
-    .catch(err => showAppError("通信エラーが発生しました。"));
+    .then(res => res.json())
+    .then(data => {
+      if(data.success) {
+        showAppSuccess("💬 対象のユーザーコメントを非表示に設定しました。");
+        loadManagementComments();
+        startLockTimers();
+      } else { showAppError("❌ コメント削除処理に失敗しました。"); }
+    });
   }
 </script>
 </body>
