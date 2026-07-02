@@ -26,7 +26,6 @@
       text-align: center;
     }
 
-    /* 検索・絞り込みエリア */
     .filter-card {
       width: 100%;
       max-width: 600px;
@@ -51,14 +50,9 @@
       outline: none;
       box-sizing: border-box;
     }
-    .search-input:focus {
-      border-color: #72b2cc;
-    }
+    .search-input:focus { border-color: #72b2cc; }
 
-    .tab-container {
-      display: flex;
-      gap: 8px;
-    }
+    .tab-container { display: flex; gap: 8px; }
 
     .tab-btn {
       flex: 1;
@@ -79,7 +73,6 @@
       border-color: #2b7a9e;
     }
 
-    /* カレンダーコンテナ */
     .calendar-container {
       width: 100%;
       max-width: 600px;
@@ -88,7 +81,6 @@
       gap: 20px;
     }
 
-    /* 独立したカードタイプ */
     .event-card {
       background-color: #ffffff;
       border-radius: 12px;
@@ -100,7 +92,6 @@
       position: relative;
     }
 
-    /* 各種バッジ・ラベル */
     .badge-container {
       position: absolute;
       top: 15px;
@@ -131,7 +122,6 @@
       border-radius: 4px;
     }
 
-    /* 本文コンテンツ */
     .card-body {
       padding: 20px;
       display: flex;
@@ -145,34 +135,15 @@
       font-weight: 700;
       color: #1d5670;
       margin-bottom: 6px;
-      padding-right: 100px; /* バッジとの重複防止 */
+      padding-right: 100px;
       line-height: 1.4;
     }
 
-    .info-line {
-      display: flex;
-      line-height: 1.5;
-      align-items: flex-start;
-    }
+    .info-line { display: flex; line-height: 1.5; align-items: flex-start; }
+    .info-label { font-weight: 700; color: #5a9cb3; width: 90px; flex-shrink: 0; }
+    .info-value { color: #444444; }
 
-    .info-label {
-      font-weight: 700;
-      color: #5a9cb3;
-      width: 90px;
-      flex-shrink: 0;
-    }
-
-    .info-value {
-      color: #444444;
-    }
-
-    /* アクションリンクボタン */
-    .action-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 5px;
-    }
+    .action-links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 5px; }
 
     .inline-link-btn {
       display: inline-flex;
@@ -187,11 +158,7 @@
       font-weight: 500;
       border: 1px solid #d2e6f1;
     }
-    .inline-link-btn:hover {
-      background-color: #e1f0f7;
-    }
 
-    /* フッター：本文との間に区切り線 */
     .card-footer {
       border-top: 1px solid #e8f4f9;
       padding: 10px 15px;
@@ -201,12 +168,8 @@
       align-items: center;
     }
 
-    .footer-left-btns {
-      display: flex;
-      gap: 12px;
-    }
+    .footer-left-btns { display: flex; gap: 12px; }
 
-    /* ボタン共通：型取り・グレースケール基本スタイル */
     .action-btn {
       display: flex;
       align-items: center;
@@ -220,10 +183,7 @@
       color: #777777;
       transition: background-color 0.2s;
     }
-
-    .action-btn:hover {
-      background-color: #f0f7fa;
-    }
+    .action-btn:hover { background-color: #f0f7fa; }
 
     .action-btn svg {
       width: 18px;
@@ -235,30 +195,11 @@
       stroke-linejoin: round;
     }
 
-    /* 各ボタンのアクティブ状態 */
-    .comment-btn.active svg {
-      stroke: #2b7a9e;
-      fill: #e1f0f7;
-    }
-
-    .going-btn.active {
-      color: #2a9d8f;
-      font-weight: bold;
-    }
-    .going-btn.active svg {
-      stroke: #2a9d8f;
-      fill: #e6f6f4;
-    }
-
-    .like-btn.liked {
-      color: #e63946;
-      animation: click-dent 0.15s ease-in-out;
-      font-weight: bold;
-    }
-    .like-btn.liked svg {
-      fill: #e63946;
-      stroke: #e63946;
-    }
+    .comment-btn.active svg { stroke: #2b7a9e; fill: #e1f0f7; }
+    .going-btn.active { color: #2a9d8f; font-weight: bold; }
+    .going-btn.active svg { stroke: #2a9d8f; fill: #e6f6f4; }
+    .like-btn.liked { color: #e63946; animation: click-dent 0.15s ease-in-out; font-weight: bold; }
+    .like-btn.liked svg { fill: #e63946; stroke: #e63946; }
 
     @keyframes click-dent {
       0% { transform: scale(1); }
@@ -266,14 +207,8 @@
       100% { transform: scale(1); }
     }
 
-    /* LINE共有ボタンの独自カラー */
-    .share-line-btn {
-      color: #06c755;
-      font-weight: 500;
-    }
-    .share-line-btn svg {
-      stroke: #06c755;
-    }
+    .share-line-btn { color: #06c755; font-weight: 500; }
+    .share-line-btn svg { stroke: #06c755; }
 
     /* コメントエリア */
     .comment-section {
@@ -281,6 +216,30 @@
       background-color: #fcfdfe;
       padding: 15px;
       display: none;
+    }
+
+    /* 【新機能】テキストスタンプトレイのスタイリング */
+    .stamp-container {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .stamp-btn {
+      background-color: #eaf3f7;
+      border: 1px solid #b9daf0;
+      color: #2b7a9e;
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 0.78rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .stamp-btn:hover {
+      background-color: #2b7a9e;
+      color: white;
+      border-color: #2b7a9e;
     }
 
     .comment-input-wrap {
@@ -297,9 +256,7 @@
       font-size: 0.9rem;
       outline: none;
     }
-    .comment-input:focus {
-      border-color: #72b2cc;
-    }
+    .comment-input:focus { border-color: #72b2cc; }
 
     .comment-submit-btn {
       background-color: #5a9cb3;
@@ -328,12 +285,7 @@
       line-height: 1.4;
     }
 
-    .comment-time {
-      font-size: 0.72rem;
-      color: #999999;
-      margin-top: 3px;
-      text-align: right;
-    }
+    .comment-time { font-size: 0.72rem; color: #999999; margin-top: 3px; text-align: right; }
   </style>
 </head>
 <body>
@@ -354,10 +306,8 @@
   </div>
 
   <script>
-    // 【重要】ご自身の「一般ユーザー用GAS」のウェブアプリURLをここに貼り付けてください
-    const GAS_URL = "https://script.google.com/macros/s/AKfycby67w-b8DCaKhUYUm6rtViDG-HXTTppRVZp0s28B2vQZBSborvSdjuBt1NBi5YJ0rEvQg/exec";
-
-    let allEvents = []; // 取得した全データを保持する配列
+    const GAS_URL = "ここにあなたの一般ユーザー用GASウェブアプリURLを貼り付け";
+    let allEvents = []; 
     let currentTab = 'all';
 
     document.addEventListener('DOMContentLoaded', loadEvents);
@@ -379,9 +329,6 @@
       });
     }
 
-    /**
-     * イベントカードの動的レンダリング
-     */
     function renderEvents(events) {
       const container = document.getElementById('calendarContainer');
       container.innerHTML = '';
@@ -395,8 +342,6 @@
 
       events.forEach(event => {
         const isToday = (event.date === todayStr);
-        
-        // 外部連携用のURL生成
         const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.address || event.location)}`;
         const gCalUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${event.date.replace(/\//g, '')}T${(event.time || '00:00').replace(':', '')}00Z&details=${encodeURIComponent(event.remark || '')}&location=${encodeURIComponent(event.location)}`;
         const lineShareUrl = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent('【奄美イベント情報】\n' + event.title + '\n日時: ' + event.date + ' ' + event.time + '\n場所: ' + event.location + '\n友達を誘って一緒に行こう！')}`;
@@ -450,7 +395,15 @@
             </a>
           </div>
           
+          <!-- コメントエリア -->
           <div class="comment-section" id="comment-section-${event.eventId}">
+            <!-- 【新機能】ワンタップテキストスタンプトレイ -->
+            <div class="stamp-container">
+              <button class="stamp-btn" onclick="sendStamp('${event.eventId}', '📢 行くよ宣言！')">📢 行くよ宣言！</button>
+              <button class="stamp-btn" onclick="sendStamp('${event.eventId}', '🏝️ シマから応援！')">🏝️ シマから応援！</button>
+              <button class="stamp-btn" onclick="sendStamp('${event.eventId}', '🏠 おウチで応援！')">🏠 おウチで応援！</button>
+            </div>
+            
             <div class="comment-input-wrap">
               <input type="text" class="comment-input" id="input-${event.eventId}" placeholder="コメントを入力（新しい順に上へ表示）...">
               <button class="comment-submit-btn" onclick="submitComment('${event.eventId}')">送信</button>
@@ -469,9 +422,6 @@
       });
     }
 
-    /**
-     * 【新機能】タブの切り替えロジック
-     */
     function switchTab(tabType) {
       currentTab = tabType;
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -479,23 +429,14 @@
       filterEvents();
     }
 
-    /**
-     * 【新機能】検索ワードと選択タブによる複合リアルタイムフィルタリング
-     */
     function filterEvents() {
       const keyword = document.getElementById('searchInput').value.toLowerCase().trim();
       const todayStr = getTodayString();
-      
       let filtered = allEvents;
 
-      // 1. タブによる日付絞り込み
-      if (currentTab === 'today') {
-        filtered = filtered.filter(ev => ev.date === todayStr);
-      } else if (currentTab === 'weekend') {
-        filtered = filtered.filter(ev => isThisWeekend(ev.date));
-      }
+      if (currentTab === 'today') { filtered = filtered.filter(ev => ev.date === todayStr); } 
+      else if (currentTab === 'weekend') { filtered = filtered.filter(ev => isThisWeekend(ev.date)); }
 
-      // 2. 検索キーワードによる絞り込み
       if (keyword) {
         filtered = filtered.filter(ev => 
           ev.title.toLowerCase().includes(keyword) || 
@@ -504,7 +445,6 @@
           (ev.address && ev.address.toLowerCase().includes(keyword))
         );
       }
-
       renderEvents(filtered);
     }
 
@@ -523,13 +463,9 @@
       .then(data => { if (data.success) countSpan.innerText = data.newLikes; });
     }
 
-    /**
-     * 【新機能】行くよ！ボタンのカウンター同期処理
-     */
     function handleGoing(eventId) {
       const btn = document.getElementById(`going-btn-${eventId}`);
       const countSpan = document.getElementById(`going-count-${eventId}`);
-      
       btn.classList.toggle('active');
 
       fetch(GAS_URL, {
@@ -553,19 +489,33 @@
       }
     }
 
+    /**
+     * 【新機能】スタンプを即時送信する関数
+     */
+    function sendStamp(eventId, stampText) {
+      executeCommentSubmission(eventId, stampText);
+    }
+
     function submitComment(eventId) {
       const input = document.getElementById(`input-${eventId}`);
       const commentText = input.value.trim();
       if (!commentText) return;
+      executeCommentSubmission(eventId, commentText, input);
+    }
 
+    /**
+     * コメント・スタンプ送信のコアロジック（共通化して綺麗に整理）
+     */
+    function executeCommentSubmission(eventId, text, inputElement = null) {
       fetch(GAS_URL, {
         method: 'POST',
-        body: JSON.stringify({ action: 'addComment', eventId: eventId, comment: commentText })
+        body: JSON.stringify({ action: 'addComment', eventId: eventId, comment: text })
       })
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          input.value = '';
+          if (inputElement) inputElement.value = ''; // 通常入力の時だけクリア
+          
           const list = document.getElementById(`comments-list-${eventId}`);
           const newItem = document.createElement('div');
           newItem.className = 'comment-item';
@@ -575,24 +525,18 @@
           const countSpan = document.getElementById(`comment-count-${eventId}`);
           countSpan.innerText = parseInt(countSpan.innerText) + 1;
         }
-      });
+      })
+      .catch(err => console.error("コメント送信エラー:", err));
     }
-
-    /* --- 便利系日付ユーティリティ関数関数 --- */
 
     function getTodayString() {
       const now = new Date();
-      const y = now.getFullYear();
-      const m = String(now.getMonth() + 1).padStart(2, '0');
-      const d = String(now.getDate()).padStart(2, '0');
-      return `${y}/${m}/${d}`;
+      return `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}`;
     }
 
     function isThisWeekend(dateStr) {
-      // dateStr形式: "yyyy/mm/dd"
       const date = new Date(dateStr);
-      const day = date.getDay(); // 0: 日曜日, 6: 土曜日
-      return (day === 0 || day === 6);
+      return (date.getDay() === 0 || date.getDay() === 6);
     }
   </script>
 </body>
